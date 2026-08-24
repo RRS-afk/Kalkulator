@@ -698,16 +698,14 @@
     }
 
     function gantiTipeDiskon() {
-        const tipe = document.getElementById('tipe-diskon').value;
+        // BUGFIX: sebelumnya nilai diskon dicoba "dikonversi" otomatis antara Rp <-> %,
+        // tapi parseFloat() salah membaca titik pemisah ribuan sebagai titik desimal
+        // (mis. "12.500.000" terbaca 12.5). Tidak ada konversi Rp<->% yang benar secara
+        // matematis, jadi nilai diskon di-reset ke 0 setiap kali tipe diganti — user
+        // tinggal isi ulang sesuai tipe yang baru dipilih, supaya tidak ada nilai yang
+        // diam-diam salah tanpa disadari.
         const inputDiskon = document.getElementById('input-diskon');
-        if (tipe === 'percent') {
-            let v = parseFloat(inputDiskon.value.replace(/[^0-9.]/g, '')) || 0;
-            if (v > 100) v = 100;
-            inputDiskon.value = v;
-        } else {
-            const digits = inputDiskon.value.replace(/[^0-9]/g, '');
-            inputDiskon.value = digits === '' ? '' : new Intl.NumberFormat('id-ID').format(parseInt(digits, 10));
-        }
+        inputDiskon.value = '0';
         simpanDanHitung();
     }
 
