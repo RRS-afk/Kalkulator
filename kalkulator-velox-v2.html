@@ -748,13 +748,34 @@
     }
 
     let timeoutSimpan;
+    let timeoutAutosave;
+
     function simpanDanHitung() {
+        // OPTIMASI: bagian ini harus terasa instan di setiap ketukan keyboard —
+        // hitung ulang angka, judul tab, info tanda tangan, dan sinkron tampilan cetak T&C.
+        // Tidak ada operasi localStorage di sini, jadi ringan walau dipanggil terus-menerus.
         hitungSemua();
-        simpanKeStorage();
         updateJudulHalaman();
         updateTandaTanganInfo();
         syncPrintTC();
+
+        // OPTIMASI: penulisan ke localStorage (baca+tulis SELURUH daftar proyek + render ulang
+        // dropdown "Pilih Proyek Tersimpan") di-debounce 400ms setelah user berhenti mengetik.
+        // Tanpa ini, tiap satu huruf yang diketik akan JSON.parse+JSON.stringify seluruh
+        // riwayat proyek tersimpan dan me-render ulang <select> — makin berat seiring
+        // banyaknya proyek yang tersimpan.
+        clearTimeout(timeoutAutosave);
+        timeoutAutosave = setTimeout(simpanKeStorage, 400);
     }
+
+    // Pengaman: kalau tab ditutup/refresh persis saat debounce di atas belum sempat jalan,
+    // paksa simpan segera supaya tidak ada perubahan terakhir yang hilang.
+    window.addEventListener('beforeunload', () => {
+        if (timeoutAutosave) {
+            clearTimeout(timeoutAutosave);
+            simpanKeStorage();
+        }
+    });
 
     function updateJudulHalaman() {
         const namaProyek = document.getElementById('cust-proyek').value.trim();
