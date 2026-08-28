@@ -246,40 +246,41 @@
                         </div>
                     </div>
 
-                    <div class="card no-print" style="background-color: #e0f2fe; border: 1px solid #bae6fd;">
-                        <h3 style="color: #0369a1; border-color: #bae6fd;">Pengaturan Margin, Pajak & Diskon</h3>
-                        <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: flex-end;">
-                            <div style="flex: 1; min-width: 130px;">
-                                <label style="font-size: 13px; display: block; margin-bottom: 5px; font-weight:bold;">Biaya Tak Terduga (%)</label>
-                                <input type="number" id="persen-contingency" min="0" value="3" oninput="validasiPersen(this); simpanDanHitung()">
-                            </div>
-                            <div style="flex: 1; min-width: 130px;">
-                                <label style="font-size: 13px; display: block; margin-bottom: 5px; font-weight:bold;">Target Keuntungan (%)</label>
-                                <input type="number" id="persen-profit" min="0" value="15" oninput="validasiPersen(this); simpanDanHitung()">
-                            </div>
-                            <div style="flex: 1; min-width: 150px;">
-                                <label style="font-size: 13px; display: block; margin-bottom: 5px; font-weight:bold;">Tipe Diskon</label>
-                                <select id="tipe-diskon" onchange="gantiTipeDiskon()" style="padding: 8px;">
-                                    <option value="rp">Nominal (Rp)</option>
-                                    <option value="percent">Persen (%)</option>
-                                </select>
-                            </div>
-                            <div style="flex: 1; min-width: 130px;">
-                                <label style="font-size: 13px; display: block; margin-bottom: 5px; font-weight:bold;">Nilai Diskon</label>
-                                <input type="text" id="input-diskon" value="0" oninput="handleDiskonInput(this)">
-                            </div>
-                            <div style="flex: 1.2; min-width: 180px; display: flex; align-items: center; gap: 10px; padding-bottom: 5px;">
-                                <input type="checkbox" id="check-pajak" checked onchange="simpanDanHitung()" style="width: 20px; height: 20px; cursor: pointer;">
-                                <label for="check-pajak" style="font-size: 13px; font-weight: bold; color: #0369a1; cursor: pointer; margin: 0;">Gunakan Pajak PPN (11%)</label>
-                            </div>
-                        </div>
-                        <p style="font-size: 12px; color: #0369a1; margin-top: 10px; margin-bottom: 0;">
-                            <em>*Diskon dapat dipilih menggunakan nominal Rupiah (Rp) atau Persen (%, maksimal 100%) untuk memotong total penawaran harga. Persentase markup tidak bisa bernilai negatif.</em>
-                        </p>
-                    </div>
-
                     <div class="card">
                         <h3>A. Rincian Bahan & Material</h3>
+
+                        <div class="card no-print" style="background-color: #e0f2fe; border: 1px solid #bae6fd; margin-bottom: 10px; padding: 10px 12px;">
+                            <h3 style="color: #0369a1; border-color: #bae6fd; font-size: 13px; margin-bottom: 8px;">Pengaturan Margin, Pajak & Diskon — Bahan & Material</h3>
+                            <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end;">
+                                <div style="flex: 1; min-width: 110px;">
+                                    <label style="font-size: 12px; display: block; margin-bottom: 4px; font-weight:bold;">Biaya Tak Terduga (%)</label>
+                                    <input type="number" id="persen-contingency-bahan" min="0" value="3" oninput="validasiPersen(this); simpanDanHitung()">
+                                </div>
+                                <div style="flex: 1; min-width: 110px;">
+                                    <label style="font-size: 12px; display: block; margin-bottom: 4px; font-weight:bold;">Target Keuntungan (%)</label>
+                                    <input type="number" id="persen-profit-bahan" min="0" value="15" oninput="validasiPersen(this); simpanDanHitung()">
+                                </div>
+                                <div style="flex: 1; min-width: 130px;">
+                                    <label style="font-size: 12px; display: block; margin-bottom: 4px; font-weight:bold;">Tipe Diskon</label>
+                                    <select id="tipe-diskon-bahan" onchange="gantiTipeDiskon('bahan')" style="padding: 7px;">
+                                        <option value="rp">Nominal (Rp)</option>
+                                        <option value="percent">Persen (%)</option>
+                                    </select>
+                                </div>
+                                <div style="flex: 1; min-width: 110px;">
+                                    <label style="font-size: 12px; display: block; margin-bottom: 4px; font-weight:bold;">Nilai Diskon</label>
+                                    <input type="text" id="input-diskon-bahan" value="0" oninput="handleDiskonInput(this, 'bahan')">
+                                </div>
+                                <div style="flex: 1.1; min-width: 150px; display: flex; align-items: center; gap: 8px; padding-bottom: 5px;">
+                                    <input type="checkbox" id="check-pajak-bahan" checked onchange="simpanDanHitung()" style="width: 18px; height: 18px; cursor: pointer;">
+                                    <label for="check-pajak-bahan" style="font-size: 12px; font-weight: bold; color: #0369a1; cursor: pointer; margin: 0;">Pajak PPN (11%)</label>
+                                </div>
+                            </div>
+                            <p style="font-size: 11px; color: #0369a1; margin-top: 8px; margin-bottom: 0;">
+                                <em>*Pengaturan ini hanya berlaku untuk tabel Bahan & Material.</em>
+                            </p>
+                        </div>
+
                         <div class="table-responsive">
                             <table id="tbl-bahan">
                                 <thead>
@@ -310,6 +311,39 @@
 
                     <div class="card">
                         <h3>B. Rincian Bahan Pasang / Alat Kerja</h3>
+
+                        <div class="card no-print" style="background-color: #e0f2fe; border: 1px solid #bae6fd; margin-bottom: 10px; padding: 10px 12px;">
+                            <h3 style="color: #0369a1; border-color: #bae6fd; font-size: 13px; margin-bottom: 8px;">Pengaturan Margin, Pajak & Diskon — Bahan Pasang / Alat</h3>
+                            <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end;">
+                                <div style="flex: 1; min-width: 110px;">
+                                    <label style="font-size: 12px; display: block; margin-bottom: 4px; font-weight:bold;">Biaya Tak Terduga (%)</label>
+                                    <input type="number" id="persen-contingency-alat" min="0" value="3" oninput="validasiPersen(this); simpanDanHitung()">
+                                </div>
+                                <div style="flex: 1; min-width: 110px;">
+                                    <label style="font-size: 12px; display: block; margin-bottom: 4px; font-weight:bold;">Target Keuntungan (%)</label>
+                                    <input type="number" id="persen-profit-alat" min="0" value="15" oninput="validasiPersen(this); simpanDanHitung()">
+                                </div>
+                                <div style="flex: 1; min-width: 130px;">
+                                    <label style="font-size: 12px; display: block; margin-bottom: 4px; font-weight:bold;">Tipe Diskon</label>
+                                    <select id="tipe-diskon-alat" onchange="gantiTipeDiskon('alat')" style="padding: 7px;">
+                                        <option value="rp">Nominal (Rp)</option>
+                                        <option value="percent">Persen (%)</option>
+                                    </select>
+                                </div>
+                                <div style="flex: 1; min-width: 110px;">
+                                    <label style="font-size: 12px; display: block; margin-bottom: 4px; font-weight:bold;">Nilai Diskon</label>
+                                    <input type="text" id="input-diskon-alat" value="0" oninput="handleDiskonInput(this, 'alat')">
+                                </div>
+                                <div style="flex: 1.1; min-width: 150px; display: flex; align-items: center; gap: 8px; padding-bottom: 5px;">
+                                    <input type="checkbox" id="check-pajak-alat" checked onchange="simpanDanHitung()" style="width: 18px; height: 18px; cursor: pointer;">
+                                    <label for="check-pajak-alat" style="font-size: 12px; font-weight: bold; color: #0369a1; cursor: pointer; margin: 0;">Pajak PPN (11%)</label>
+                                </div>
+                            </div>
+                            <p style="font-size: 11px; color: #0369a1; margin-top: 8px; margin-bottom: 0;">
+                                <em>*Pengaturan ini hanya berlaku untuk tabel Bahan Pasang / Alat.</em>
+                            </p>
+                        </div>
+
                         <div class="table-responsive">
                             <table id="tbl-alat">
                                 <thead>
@@ -340,6 +374,39 @@
 
                     <div class="card">
                         <h3>C. Rincian Jasa & Operasional</h3>
+
+                        <div class="card no-print" style="background-color: #e0f2fe; border: 1px solid #bae6fd; margin-bottom: 10px; padding: 10px 12px;">
+                            <h3 style="color: #0369a1; border-color: #bae6fd; font-size: 13px; margin-bottom: 8px;">Pengaturan Margin, Pajak & Diskon — Jasa & Operasional</h3>
+                            <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end;">
+                                <div style="flex: 1; min-width: 110px;">
+                                    <label style="font-size: 12px; display: block; margin-bottom: 4px; font-weight:bold;">Biaya Tak Terduga (%)</label>
+                                    <input type="number" id="persen-contingency-jasa" min="0" value="3" oninput="validasiPersen(this); simpanDanHitung()">
+                                </div>
+                                <div style="flex: 1; min-width: 110px;">
+                                    <label style="font-size: 12px; display: block; margin-bottom: 4px; font-weight:bold;">Target Keuntungan (%)</label>
+                                    <input type="number" id="persen-profit-jasa" min="0" value="15" oninput="validasiPersen(this); simpanDanHitung()">
+                                </div>
+                                <div style="flex: 1; min-width: 130px;">
+                                    <label style="font-size: 12px; display: block; margin-bottom: 4px; font-weight:bold;">Tipe Diskon</label>
+                                    <select id="tipe-diskon-jasa" onchange="gantiTipeDiskon('jasa')" style="padding: 7px;">
+                                        <option value="rp">Nominal (Rp)</option>
+                                        <option value="percent">Persen (%)</option>
+                                    </select>
+                                </div>
+                                <div style="flex: 1; min-width: 110px;">
+                                    <label style="font-size: 12px; display: block; margin-bottom: 4px; font-weight:bold;">Nilai Diskon</label>
+                                    <input type="text" id="input-diskon-jasa" value="0" oninput="handleDiskonInput(this, 'jasa')">
+                                </div>
+                                <div style="flex: 1.1; min-width: 150px; display: flex; align-items: center; gap: 8px; padding-bottom: 5px;">
+                                    <input type="checkbox" id="check-pajak-jasa" checked onchange="simpanDanHitung()" style="width: 18px; height: 18px; cursor: pointer;">
+                                    <label for="check-pajak-jasa" style="font-size: 12px; font-weight: bold; color: #0369a1; cursor: pointer; margin: 0;">Pajak PPN (11%)</label>
+                                </div>
+                            </div>
+                            <p style="font-size: 11px; color: #0369a1; margin-top: 8px; margin-bottom: 0;">
+                                <em>*Pengaturan ini hanya berlaku untuk tabel Jasa & Operasional.</em>
+                            </p>
+                        </div>
+
                         <div class="table-responsive">
                             <table id="tbl-jasa">
                                 <thead>
@@ -378,26 +445,23 @@
                             <div style="font-weight: bold; margin-bottom: 8px; font-size: 14px;">Perhitungan Subtotal</div>
                             
                             <div class="flex-row summary-item-text rincian-subtotal" style="color: #cbd5e1; margin-bottom: 8px;">
-                                <span>A. Subtotal Bahan & Material:</span><span id="rek-subtotal-bahan">Rp 0</span>
-                            </div>
-                            <div class="flex-row summary-item-text rincian-subtotal" style="color: #cbd5e1; margin-bottom: 8px;">
-                                <span>B. Subtotal Bahan Pasang / Alat:</span><span id="rek-subtotal-alat">Rp 0</span>
+                                <span>A+B. Subtotal Bahan & Material + Alat (Gabungan):</span><span id="rek-subtotal-bahan-alat">Rp 0</span>
                             </div>
                             <div class="flex-row summary-item-text rincian-subtotal" style="color: #cbd5e1; margin-bottom: 8px;">
                                 <span>C. Subtotal Jasa & Operasional:</span><span id="rek-subtotal-jasa">Rp 0</span>
                             </div>
 
                             <div class="flex-row summary-item-text" style="font-weight: bold; margin-bottom: 8px;">
-                                <span>Subtotal Keseluruhan (A + B + C):</span><span id="print-subtotal">Rp 0</span>
+                                <span>Subtotal Keseluruhan (A+B + C):</span><span id="print-subtotal">Rp 0</span>
                             </div>
                         </div>
 
                         <div class="flex-row" id="row-diskon" style="color: #f87171; margin-bottom: 8px;">
-                            <span id="label-diskon-teks">Diskon Proyek:</span><span id="rek-diskon">- Rp 0</span>
+                            <span id="label-diskon-teks">Diskon Total (Gabungan A+B+C):</span><span id="rek-diskon">- Rp 0</span>
                         </div>
 
                         <div class="flex-row border-bottom-thin summary-item-text" id="row-pajak" style="margin-bottom: 8px; padding-bottom: 10px;">
-                            <span>Pajak PPN (11%):</span><span id="rek-pajak">Rp 0</span>
+                            <span>Pajak PPN 11% (Gabungan):</span><span id="rek-pajak">Rp 0</span>
                         </div>
                         
                         <div class="flex-row total-row" style="margin-top: 10px;">
@@ -672,6 +736,16 @@
         renderDaftarProyek();
     }
 
+    function ambilPengaturanTabel(suffix) {
+        return {
+            contingency: document.getElementById('persen-contingency-' + suffix).value,
+            profit: document.getElementById('persen-profit-' + suffix).value,
+            tipeDiskon: document.getElementById('tipe-diskon-' + suffix).value,
+            diskon: document.getElementById('input-diskon-' + suffix).value,
+            usePajak: document.getElementById('check-pajak-' + suffix).checked
+        };
+    }
+
     function ambilFormSnapshot() {
         return {
             pelanggan: {
@@ -688,29 +762,25 @@
             tc: document.getElementById('input-tc').value,
             rekening: document.getElementById('input-rekening').value,
             pengaturan: {
-                contingency: document.getElementById('persen-contingency').value,
-                profit: document.getElementById('persen-profit').value,
-                tipeDiskon: document.getElementById('tipe-diskon').value,
-                diskon: document.getElementById('input-diskon').value,
-                usePajak: document.getElementById('check-pajak').checked
+                bahan: ambilPengaturanTabel('bahan'),
+                alat: ambilPengaturanTabel('alat'),
+                jasa: ambilPengaturanTabel('jasa')
             }
         };
     }
 
-    function gantiTipeDiskon() {
-        // BUGFIX: sebelumnya nilai diskon dicoba "dikonversi" otomatis antara Rp <-> %,
-        // tapi parseFloat() salah membaca titik pemisah ribuan sebagai titik desimal
-        // (mis. "12.500.000" terbaca 12.5). Tidak ada konversi Rp<->% yang benar secara
+    // Setiap tabel (bahan/alat/jasa) sekarang punya pengaturan Margin/Pajak/Diskon sendiri-sendiri,
+    // jadi fungsi-fungsi berikut menerima parameter "suffix" untuk tahu tabel mana yang dimaksud.
+    function gantiTipeDiskon(suffix) {
+        // BUGFIX (tetap berlaku per tabel): tidak ada konversi Rp<->% yang benar secara
         // matematis, jadi nilai diskon di-reset ke 0 setiap kali tipe diganti — user
-        // tinggal isi ulang sesuai tipe yang baru dipilih, supaya tidak ada nilai yang
-        // diam-diam salah tanpa disadari.
-        const inputDiskon = document.getElementById('input-diskon');
-        inputDiskon.value = '0';
+        // tinggal isi ulang sesuai tipe yang baru dipilih untuk tabel ini.
+        document.getElementById('input-diskon-' + suffix).value = '0';
         simpanDanHitung();
     }
 
-    function handleDiskonInput(input) {
-        const tipe = document.getElementById('tipe-diskon').value;
+    function handleDiskonInput(input, suffix) {
+        const tipe = document.getElementById('tipe-diskon-' + suffix).value;
         if (tipe === 'percent') {
             input.value = input.value.replace(/[^0-9.]/g, '');
             let v = parseFloat(input.value);
@@ -1036,66 +1106,77 @@
         return { totalModal, totalJual };
     }
 
-    function hitungSemua() {
-        const pContingency = Math.max(0, parseFloat(document.getElementById('persen-contingency').value) || 0);
-        const pProfit = Math.max(0, parseFloat(document.getElementById('persen-profit').value) || 0);
-        const tipeDiskon = document.getElementById('tipe-diskon').value;
-        const rawDiskonInput = document.getElementById('input-diskon').value;
-        let valDiskonInput = parseFloat(rawDiskonInput.toString().replace(/[^0-9.]/g, '')) || 0;
-        if (tipeDiskon === 'percent' && valDiskonInput > 100) valDiskonInput = 100;
-
-        const usePajak = document.getElementById('check-pajak').checked;
-        const pPajak = usePajak ? 11 : 0;
+    // Menghitung SATU tabel (bahan/alat/jasa) memakai pengaturan margin, diskon, dan pajak
+    // miliknya sendiri. Ini satu-satunya tempat rumus markup->diskon->pajak dihitung,
+    // supaya tidak ada logika yang tertulis dua kali (dan berpotensi tidak sinkron) untuk
+    // tabel yang berbeda.
+    function hitungGrupTabel(suffix, tableId) {
+        const pContingency = Math.max(0, parseFloat(document.getElementById('persen-contingency-' + suffix).value) || 0);
+        const pProfit = Math.max(0, parseFloat(document.getElementById('persen-profit-' + suffix).value) || 0);
+        const tipeDiskon = document.getElementById('tipe-diskon-' + suffix).value;
+        const rawDiskonInput = document.getElementById('input-diskon-' + suffix).value;
+        const usePajak = document.getElementById('check-pajak-' + suffix).checked;
 
         const totalMarkupPersen = pContingency + pProfit;
+        const { totalModal, totalJual } = hitungSubtotalTabel(tableId, totalMarkupPersen);
 
-        const dataBahan = hitungSubtotalTabel('tbl-bahan', totalMarkupPersen);
-        const dataAlat = hitungSubtotalTabel('tbl-alat', totalMarkupPersen);
-        const dataJasa = hitungSubtotalTabel('tbl-jasa', totalMarkupPersen);
-
-        document.getElementById('foot-total-bahan').innerText = formatRupiah(dataBahan.totalJual);
-        document.getElementById('foot-total-alat').innerText = formatRupiah(dataAlat.totalJual);
-        document.getElementById('foot-total-jasa').innerText = formatRupiah(dataJasa.totalJual);
-
-        document.getElementById('rek-subtotal-bahan').innerText = formatRupiah(dataBahan.totalJual);
-        document.getElementById('rek-subtotal-alat').innerText = formatRupiah(dataAlat.totalJual);
-        document.getElementById('rek-subtotal-jasa').innerText = formatRupiah(dataJasa.totalJual);
-
-        const totalModalKeseluruhan = dataBahan.totalModal + dataAlat.totalModal + dataJasa.totalModal;
-        const totalPenawaranKeseluruhan = dataBahan.totalJual + dataAlat.totalJual + dataJasa.totalJual;
-
-        let nilaiDiskonRupiah = 0;
+        let diskonRupiah = 0;
         if (tipeDiskon === 'percent') {
-            nilaiDiskonRupiah = totalPenawaranKeseluruhan * (valDiskonInput / 100);
-            document.getElementById('label-diskon-teks').innerText = `Diskon Proyek (${valDiskonInput}%):`;
+            let valPersen = parseFloat(rawDiskonInput.toString().replace(/[^0-9.]/g, '')) || 0;
+            if (valPersen > 100) valPersen = 100;
+            diskonRupiah = totalJual * (valPersen / 100);
         } else {
-            nilaiDiskonRupiah = getAngka(rawDiskonInput);
-            document.getElementById('label-diskon-teks').innerText = "Diskon Proyek:";
+            diskonRupiah = getAngka(rawDiskonInput);
         }
 
-        let subtotalSetelahDiskon = totalPenawaranKeseluruhan - nilaiDiskonRupiah;
-        if (subtotalSetelahDiskon < 0) subtotalSetelahDiskon = 0;
+        const subtotalSetelahDiskon = Math.max(0, totalJual - diskonRupiah);
+        const pajak = usePajak ? subtotalSetelahDiskon * 0.11 : 0;
 
-        const nilaiPajak = subtotalSetelahDiskon * (pPajak / 100);
-        const grandTotal = subtotalSetelahDiskon + nilaiPajak;
-        const totalKeuntunganBersih = totalPenawaranKeseluruhan - totalModalKeseluruhan - nilaiDiskonRupiah;
+        return { totalModal, totalJual, diskonRupiah, pajak };
+    }
+
+    function hitungSemua() {
+        const gBahan = hitungGrupTabel('bahan', 'tbl-bahan');
+        const gAlat = hitungGrupTabel('alat', 'tbl-alat');
+        const gJasa = hitungGrupTabel('jasa', 'tbl-jasa');
+
+        // Total per tabel (footer masing-masing tabel, sebelum diskon tabel itu sendiri)
+        document.getElementById('foot-total-bahan').innerText = formatRupiah(gBahan.totalJual);
+        document.getElementById('foot-total-alat').innerText = formatRupiah(gAlat.totalJual);
+        document.getElementById('foot-total-jasa').innerText = formatRupiah(gJasa.totalJual);
+
+        // Poin 1: subtotal A dan B digabung jadi satu angka di rekap
+        const totalJualBahanAlat = gBahan.totalJual + gAlat.totalJual;
+        document.getElementById('rek-subtotal-bahan-alat').innerText = formatRupiah(totalJualBahanAlat);
+        document.getElementById('rek-subtotal-jasa').innerText = formatRupiah(gJasa.totalJual);
+
+        const totalModalKeseluruhan = gBahan.totalModal + gAlat.totalModal + gJasa.totalModal;
+        const totalPenawaranKeseluruhan = totalJualBahanAlat + gJasa.totalJual;
+
+        // Diskon & pajak gabungan = jumlah dari diskon/pajak masing-masing tabel (dihitung
+        // sekali per tabel di hitungGrupTabel, lalu dijumlah di sini — tidak dihitung ulang).
+        const totalDiskonGabungan = gBahan.diskonRupiah + gAlat.diskonRupiah + gJasa.diskonRupiah;
+        const totalPajakGabungan = gBahan.pajak + gAlat.pajak + gJasa.pajak;
+
+        const grandTotal = (totalPenawaranKeseluruhan - totalDiskonGabungan) + totalPajakGabungan;
+        const totalKeuntunganBersih = totalPenawaranKeseluruhan - totalModalKeseluruhan - totalDiskonGabungan;
 
         document.getElementById('rek-modal').innerText = formatRupiah(totalModalKeseluruhan);
         document.getElementById('rek-markup').innerText = formatRupiah(totalKeuntunganBersih);
         document.getElementById('print-subtotal').innerText = formatRupiah(totalPenawaranKeseluruhan);
 
         const rowDiskon = document.getElementById('row-diskon');
-        if (nilaiDiskonRupiah > 0) {
+        if (totalDiskonGabungan > 0) {
             rowDiskon.style.display = 'flex';
-            document.getElementById('rek-diskon').innerText = "- " + formatRupiah(nilaiDiskonRupiah);
+            document.getElementById('rek-diskon').innerText = "- " + formatRupiah(totalDiskonGabungan);
         } else {
             rowDiskon.style.display = 'none';
         }
 
         const rowPajak = document.getElementById('row-pajak');
-        if (usePajak) {
+        if (totalPajakGabungan > 0) {
             rowPajak.style.display = 'flex';
-            document.getElementById('rek-pajak').innerText = formatRupiah(nilaiPajak);
+            document.getElementById('rek-pajak').innerText = formatRupiah(totalPajakGabungan);
         } else {
             rowPajak.style.display = 'none';
         }
@@ -1112,17 +1193,19 @@
             document.getElementById('cust-marketing').value = data.pelanggan.marketing || '';
             setSelectedMasaBerlaku(data.pelanggan.berlaku || '14');
         }
-        if (data.pengaturan) {
-            document.getElementById('persen-contingency').value = data.pengaturan.contingency !== undefined ? data.pengaturan.contingency : 3;
-            document.getElementById('persen-profit').value = data.pengaturan.profit !== undefined ? data.pengaturan.profit : 15;
-            if (data.pengaturan.tipeDiskon) {
-                document.getElementById('tipe-diskon').value = data.pengaturan.tipeDiskon;
+        ['bahan', 'alat', 'jasa'].forEach(suffix => {
+            let p = (data.pengaturan && data.pengaturan[suffix]) ? data.pengaturan[suffix] : null;
+            // Kompatibilitas mundur: proyek lama (sebelum pengaturan dipisah per tabel) hanya
+            // punya satu objek pengaturan global — terapkan nilai yang sama ke ketiga tabel.
+            if (!p && data.pengaturan && data.pengaturan.contingency !== undefined) {
+                p = data.pengaturan;
             }
-            document.getElementById('input-diskon').value = data.pengaturan.diskon !== undefined ? data.pengaturan.diskon : "0";
-            if (data.pengaturan.usePajak !== undefined) {
-                document.getElementById('check-pajak').checked = data.pengaturan.usePajak;
-            }
-        }
+            document.getElementById('persen-contingency-' + suffix).value = (p && p.contingency !== undefined) ? p.contingency : 3;
+            document.getElementById('persen-profit-' + suffix).value = (p && p.profit !== undefined) ? p.profit : 15;
+            document.getElementById('tipe-diskon-' + suffix).value = (p && p.tipeDiskon) ? p.tipeDiskon : 'rp';
+            document.getElementById('input-diskon-' + suffix).value = (p && p.diskon !== undefined) ? p.diskon : '0';
+            document.getElementById('check-pajak-' + suffix).checked = (p && p.usePajak !== undefined) ? p.usePajak : true;
+        });
         if (data.tc !== undefined) {
             document.getElementById('input-tc').value = data.tc;
         }
@@ -1180,11 +1263,13 @@
         document.getElementById('cust-lokasi').value = '';
         document.getElementById('cust-marketing').value = '';
         setSelectedMasaBerlaku('14');
-        document.getElementById('persen-contingency').value = 3;
-        document.getElementById('persen-profit').value = 15;
-        document.getElementById('tipe-diskon').value = 'rp';
-        document.getElementById('input-diskon').value = '0';
-        document.getElementById('check-pajak').checked = true;
+        ['bahan', 'alat', 'jasa'].forEach(suffix => {
+            document.getElementById('persen-contingency-' + suffix).value = 3;
+            document.getElementById('persen-profit-' + suffix).value = 15;
+            document.getElementById('tipe-diskon-' + suffix).value = 'rp';
+            document.getElementById('input-diskon-' + suffix).value = '0';
+            document.getElementById('check-pajak-' + suffix).checked = true;
+        });
         document.getElementById('input-tc').value = `1. Pembayaran Termin I (DP) sebesar 50% dibayarkan saat persetujuan kontrak.
 2. Pembayaran Termin II sebesar 30% dibayarkan saat Material on Site (MOS).
 3. Pelunasan akhir sebesar 20% diselesaikan maksimal 2 hari setelah Berita Acara Serah Terima (BAST).
