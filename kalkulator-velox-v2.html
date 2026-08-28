@@ -39,15 +39,16 @@
         .btn-proyek-hapus:hover { background: #fecaca; }
         
         .card { background: #ffffff; border-radius: 8px; padding: 12px 15px; margin-bottom: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.04); }
-        h3 { margin-top: 0; color: #111827; font-size: 15px; border-bottom: 2px solid #e5e7eb; padding-bottom: 6px; margin-bottom: 10px; }
         
         .table-header-flex { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e5e7eb; padding-bottom: 6px; margin-bottom: 10px; flex-wrap: wrap; gap: 10px; }
-        .table-header-flex h3 { border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
+        .table-header-flex h3 { border-bottom: none; padding-bottom: 0; margin-bottom: 0; margin-top: 0; color: #111827; font-size: 15px; }
+        h3 { margin-top: 0; color: #111827; font-size: 15px; border-bottom: 2px solid #e5e7eb; padding-bottom: 6px; margin-bottom: 10px; }
         
-        .margin-input-group { display: flex; align-items: center; gap: 8px; background: #f0fdf4; padding: 4px 10px; border: 1px solid #bbf7d0; border-radius: 6px; }
+        .margin-input-group { display: flex; align-items: center; gap: 6px; background: #f0fdf4; padding: 6px 12px; border: 1px solid #bbf7d0; border-radius: 6px; flex-wrap: wrap; }
         .margin-input-group label { font-size: 12px; font-weight: bold; color: #166534; margin: 0; }
-        .margin-input-group input { width: 70px; padding: 4px 6px; text-align: center; font-weight: bold !important; color: #166534; border-color: #86efac; }
-        
+        .margin-input-group input { width: 55px; padding: 4px 6px; text-align: center; font-weight: bold !important; color: #166534; border-color: #86efac; font-size: 13px; }
+        .margin-divider { width: 1px; height: 20px; background-color: #86efac; margin: 0 4px; }
+
         .grid-customer { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; }
         .input-group { margin-bottom: 4px; }
         .input-group label { font-size: 12.5px; font-weight: bold; color: #1f2937; display: block; margin-bottom: 2px; }
@@ -249,8 +250,11 @@
         <div class="table-header-flex">
             <h3>A. Rincian Bahan & Material</h3>
             <div class="margin-input-group no-print">
-                <label>Margin Tabel A (%):</label>
-                <input type="number" id="margin-a" min="0" value="18" oninput="validasiPersen(this); simpanDanHitung()">
+                <label>Tak Terduga (%):</label>
+                <input type="number" id="cont-a" min="0" value="3" oninput="validasiPersen(this); simpanDanHitung()">
+                <div class="margin-divider"></div>
+                <label>Keuntungan (%):</label>
+                <input type="number" id="profit-a" min="0" value="15" oninput="validasiPersen(this); simpanDanHitung()">
             </div>
         </div>
         <div class="table-responsive">
@@ -285,8 +289,11 @@
         <div class="table-header-flex">
             <h3>B. Rincian Bahan Pasang / Alat Kerja</h3>
             <div class="margin-input-group no-print">
-                <label>Margin Tabel B (%):</label>
-                <input type="number" id="margin-b" min="0" value="18" oninput="validasiPersen(this); simpanDanHitung()">
+                <label>Tak Terduga (%):</label>
+                <input type="number" id="cont-b" min="0" value="3" oninput="validasiPersen(this); simpanDanHitung()">
+                <div class="margin-divider"></div>
+                <label>Keuntungan (%):</label>
+                <input type="number" id="profit-b" min="0" value="15" oninput="validasiPersen(this); simpanDanHitung()">
             </div>
         </div>
         <div class="table-responsive">
@@ -321,8 +328,11 @@
         <div class="table-header-flex">
             <h3>C. Rincian Jasa & Operasional</h3>
             <div class="margin-input-group no-print">
-                <label>Margin Tabel C (%):</label>
-                <input type="number" id="margin-c" min="0" value="18" oninput="validasiPersen(this); simpanDanHitung()">
+                <label>Tak Terduga (%):</label>
+                <input type="number" id="cont-c" min="0" value="3" oninput="validasiPersen(this); simpanDanHitung()">
+                <div class="margin-divider"></div>
+                <label>Keuntungan (%):</label>
+                <input type="number" id="profit-c" min="0" value="15" oninput="validasiPersen(this); simpanDanHitung()">
             </div>
         </div>
         <div class="table-responsive">
@@ -357,7 +367,7 @@
         <h3 class="screen-only">REKAPITULASI BIAYA INTERNAL (Tidak tampil di PDF)</h3>
         
         <div class="flex-row screen-only"><span>Total Modal Asli (HPP):</span><span id="rek-modal">Rp 0</span></div>
-        <div class="flex-row screen-only"><span>Total Keuntungan Bersih:</span><span id="rek-markup" style="color:#4ade80;">Rp 0</span></div>
+        <div class="flex-row screen-only"><span>Total Markup (Keuntungan + Tak Terduga):</span><span id="rek-markup" style="color:#4ade80;">Rp 0</span></div>
         
         <div class="border-top-thin summary-item-text" style="padding-top: 10px;">
             <div style="font-weight: bold; margin-bottom: 8px; font-size: 14px;">Perhitungan Subtotal</div>
@@ -508,9 +518,9 @@
         if (printEl) printEl.innerText = `${val} Hari`;
     }
 
-    const KEY_PROJECTS = 'dataRABVeloxProjects_v3';
-    const KEY_ACTIVE = 'dataRABVeloxActiveId_v3';
-    const KEY_LEGACY = 'dataRABVeloxProjects_v2';
+    const KEY_PROJECTS = 'dataRABVeloxProjects_v4';
+    const KEY_ACTIVE = 'dataRABVeloxActiveId_v4';
+    const KEY_LEGACY = 'dataRABVeloxProjects_v3';
 
     function generateId() {
         return 'p_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 8);
@@ -554,7 +564,7 @@
             if (!dataLama) return;
             const parsed = JSON.parse(dataLama);
             saveProjects(parsed);
-            setActiveId(localStorage.getItem('dataRABVeloxActiveId_v2'));
+            setActiveId(localStorage.getItem('dataRABVeloxActiveId_v3'));
         } catch (e) { }
     }
 
@@ -662,9 +672,12 @@
             tc: document.getElementById('input-tc').value,
             rekening: document.getElementById('input-rekening').value,
             pengaturan: {
-                marginA: document.getElementById('margin-a').value,
-                marginB: document.getElementById('margin-b').value,
-                marginC: document.getElementById('margin-c').value,
+                contA: document.getElementById('cont-a').value,
+                profitA: document.getElementById('profit-a').value,
+                contB: document.getElementById('cont-b').value,
+                profitB: document.getElementById('profit-b').value,
+                contC: document.getElementById('cont-c').value,
+                profitC: document.getElementById('profit-c').value,
                 tipeDiskon: document.getElementById('tipe-diskon').value,
                 diskon: document.getElementById('input-diskon').value,
                 usePajak: document.getElementById('check-pajak').checked
@@ -996,9 +1009,17 @@
     }
 
     function hitungSemua() {
-        const pMarginA = Math.max(0, parseFloat(document.getElementById('margin-a').value) || 0);
-        const pMarginB = Math.max(0, parseFloat(document.getElementById('margin-b').value) || 0);
-        const pMarginC = Math.max(0, parseFloat(document.getElementById('margin-c').value) || 0);
+        const pContA = Math.max(0, parseFloat(document.getElementById('cont-a').value) || 0);
+        const pProfitA = Math.max(0, parseFloat(document.getElementById('profit-a').value) || 0);
+        const pMarginA = pContA + pProfitA;
+
+        const pContB = Math.max(0, parseFloat(document.getElementById('cont-b').value) || 0);
+        const pProfitB = Math.max(0, parseFloat(document.getElementById('profit-b').value) || 0);
+        const pMarginB = pContB + pProfitB;
+
+        const pContC = Math.max(0, parseFloat(document.getElementById('cont-c').value) || 0);
+        const pProfitC = Math.max(0, parseFloat(document.getElementById('profit-c').value) || 0);
+        const pMarginC = pContC + pProfitC;
         
         const tipeDiskon = document.getElementById('tipe-diskon').value;
         const rawDiskonInput = document.getElementById('input-diskon').value;
@@ -1073,21 +1094,26 @@
         }
         
         if (data.pengaturan) {
-            // Deteksi & konversi versi-versi lawas agar margin tidak hilang
-            let baseMargin = 18;
-            if (data.pengaturan.contingency !== undefined || data.pengaturan.profit !== undefined) {
-                let c = data.pengaturan.contingency !== undefined ? parseFloat(data.pengaturan.contingency) : 3;
-                let p = data.pengaturan.profit !== undefined ? parseFloat(data.pengaturan.profit) : 15;
-                baseMargin = c + p;
-            }
+            // Ambil data versi lama untuk mencegah margin jadi nol saat buka proyek lawas
+            let cGlob = data.pengaturan.contingency !== undefined ? parseFloat(data.pengaturan.contingency) : 3;
+            let pGlob = data.pengaturan.profit !== undefined ? parseFloat(data.pengaturan.profit) : 15;
 
-            let valA = data.pengaturan.marginA !== undefined ? data.pengaturan.marginA : (data.pengaturan.marginMaterial !== undefined ? data.pengaturan.marginMaterial : baseMargin);
-            let valB = data.pengaturan.marginB !== undefined ? data.pengaturan.marginB : (data.pengaturan.marginMaterial !== undefined ? data.pengaturan.marginMaterial : baseMargin);
-            let valC = data.pengaturan.marginC !== undefined ? data.pengaturan.marginC : (data.pengaturan.marginJasa !== undefined ? data.pengaturan.marginJasa : baseMargin);
+            const setMargin = (contId, profitId, dCont, dProfit, dMarginOld) => {
+                if (dCont !== undefined && dProfit !== undefined) {
+                    document.getElementById(contId).value = dCont;
+                    document.getElementById(profitId).value = dProfit;
+                } else if (dMarginOld !== undefined) {
+                    document.getElementById(contId).value = 0;
+                    document.getElementById(profitId).value = dMarginOld;
+                } else {
+                    document.getElementById(contId).value = cGlob;
+                    document.getElementById(profitId).value = pGlob;
+                }
+            };
 
-            document.getElementById('margin-a').value = valA;
-            document.getElementById('margin-b').value = valB;
-            document.getElementById('margin-c').value = valC;
+            setMargin('cont-a', 'profit-a', data.pengaturan.contA, data.pengaturan.profitA, data.pengaturan.marginA);
+            setMargin('cont-b', 'profit-b', data.pengaturan.contB, data.pengaturan.profitB, data.pengaturan.marginB);
+            setMargin('cont-c', 'profit-c', data.pengaturan.contC, data.pengaturan.profitC, data.pengaturan.marginC);
 
             if (data.pengaturan.tipeDiskon) {
                 document.getElementById('tipe-diskon').value = data.pengaturan.tipeDiskon;
@@ -1156,9 +1182,12 @@
         document.getElementById('cust-marketing').value = '';
         setSelectedMasaBerlaku('14');
         
-        document.getElementById('margin-a').value = 18;
-        document.getElementById('margin-b').value = 18;
-        document.getElementById('margin-c').value = 18;
+        document.getElementById('cont-a').value = 3;
+        document.getElementById('profit-a').value = 15;
+        document.getElementById('cont-b').value = 3;
+        document.getElementById('profit-b').value = 15;
+        document.getElementById('cont-c').value = 3;
+        document.getElementById('profit-c').value = 15;
         
         document.getElementById('tipe-diskon').value = 'rp';
         document.getElementById('input-diskon').value = '0';
