@@ -8,6 +8,13 @@
         * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
         body { background-color: #f3f4f6; color: #1f2937; margin: 0; padding: 10px; }
         
+        /* Pembungkus Khusus Layout Margin Halaman */
+        .page-layout-wrapper { width: 100%; border: none !important; border-collapse: collapse; }
+        .page-layout-wrapper > thead > tr > td,
+        .page-layout-wrapper > tbody > tr > td,
+        .page-layout-wrapper > tfoot > tr > td { border: none !important; padding: 0 !important; background: transparent !important; vertical-align: top; }
+        .print-header-space, .print-footer-space { display: none; }
+
         .container { max-width: 1000px; margin: auto; }
         
         .main-title-header {
@@ -39,16 +46,8 @@
         .btn-proyek-hapus:hover { background: #fecaca; }
         
         .card { background: #ffffff; border-radius: 8px; padding: 12px 15px; margin-bottom: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.04); }
-        
-        .table-header-flex { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e5e7eb; padding-bottom: 6px; margin-bottom: 10px; flex-wrap: wrap; gap: 10px; }
-        .table-header-flex h3 { border-bottom: none; padding-bottom: 0; margin-bottom: 0; margin-top: 0; color: #111827; font-size: 15px; }
         h3 { margin-top: 0; color: #111827; font-size: 15px; border-bottom: 2px solid #e5e7eb; padding-bottom: 6px; margin-bottom: 10px; }
         
-        .margin-input-group { display: flex; align-items: center; gap: 6px; background: #f0fdf4; padding: 6px 12px; border: 1px solid #bbf7d0; border-radius: 6px; flex-wrap: wrap; }
-        .margin-input-group label { font-size: 12px; font-weight: bold; color: #166534; margin: 0; }
-        .margin-input-group input { width: 55px; padding: 4px 6px; text-align: center; font-weight: bold !important; color: #166534; border-color: #86efac; font-size: 13px; }
-        .margin-divider { width: 1px; height: 20px; background-color: #86efac; margin: 0 4px; }
-
         .grid-customer { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; }
         .input-group { margin-bottom: 4px; }
         .input-group label { font-size: 12.5px; font-weight: bold; color: #1f2937; display: block; margin-bottom: 2px; }
@@ -59,9 +58,10 @@
         
         .table-responsive { overflow-x: auto; margin-bottom: 8px; border: 1px solid #e5e7eb; border-radius: 6px; }
         
-        table { width: 100%; border-collapse: collapse; min-width: 850px; }
-        th { background: #f9fafb; font-weight: bold !important; color: #111827; padding: 9px 10px; text-align: left; border-bottom: 2px solid #e5e7eb; font-size: 13.5px; vertical-align: middle; }
-        td { padding: 8px 10px; text-align: left; border-bottom: 1px solid #e5e7eb; font-size: 13.5px; vertical-align: top; font-weight: normal; }
+        /* CSS KHUSUS TABEL INNER (Data) */
+        table:not(.page-layout-wrapper) { width: 100%; border-collapse: collapse; min-width: 850px; }
+        table:not(.page-layout-wrapper) th { background: #f9fafb; font-weight: bold !important; color: #111827; padding: 9px 10px; text-align: left; border-bottom: 2px solid #e5e7eb; font-size: 13.5px; vertical-align: middle; }
+        table:not(.page-layout-wrapper) td { padding: 8px 10px; text-align: left; border-bottom: 1px solid #e5e7eb; font-size: 13.5px; vertical-align: top; font-weight: normal; }
         
         input, select, textarea { width: 100%; padding: 7px; border: 1px solid #d1d5db; border-radius: 5px; font-size: 13.5px; font-family: inherit; font-weight: normal !important; }
         input:focus, select:focus, textarea:focus { border-color: #3b82f6; outline: none; }
@@ -116,9 +116,19 @@
         .kop-info h2 { margin: 0; color: #111827; font-size: 17px; }
 
         @media print {
-            @page { margin: 15mm; } 
+            /* REVISI UTAMA: Set margin browser ke 0mm (memastikan header/footer bawaan HILANG total) */
+            @page { margin: 0mm; } 
+            
             body { background-color: #ffffff; color: #000; padding: 0 !important; margin: 0 !important; }
-            .container { max-width: 100%; width: 100%; margin: 0; }
+            
+            /* Trik pembuatan spasi kosong yang diulang pada setiap halaman */
+            .print-header-space { display: table-header-group !important; }
+            .print-header-space td { height: 15mm !important; }
+            .print-footer-space { display: table-footer-group !important; }
+            .print-footer-space td { height: 20mm !important; }
+            
+            /* Ruang Kiri Kanan */
+            .container { padding-left: 15mm !important; padding-right: 15mm !important; max-width: 100%; width: 100%; margin: 0; }
             
             .no-print, .btn-add, .btn-delete, .btn-reset, .btn-print, .btn-move, .btn-duplikat, #status-simpan, .header-action, .screen-only { display: none !important; }
             .print-only { display: flex !important; }
@@ -127,23 +137,25 @@
             
             .kop-surat { display: flex !important; margin-bottom: 0 !important; }
             th.modal-col, td.modal-col { display: none !important; }
-            th:last-child, td:last-child { display: none !important; }
+            /* PERBAIKAN: batasi selektor last-child HANYA ke tabel data (bukan tabel pembungkus halaman),
+               supaya <td> tunggal pembungkus konten (.page-layout-wrapper) tidak ikut disembunyikan saat print */
+            table:not(.page-layout-wrapper) th:last-child,
+            table:not(.page-layout-wrapper) td:last-child { display: none !important; }
             
             .card { box-shadow: none !important; border: none !important; padding: 0 !important; margin-bottom: 15px !important; page-break-inside: avoid; }
             .summary-card { background: transparent !important; color: #000 !important; border: none !important; padding: 0 !important; margin-top: 10px; }
             .summary-card h3 { display: none; }
             
-            table { min-width: 100%; border: 1px solid #000; margin-bottom: 8px; }
-            th { border: 1px solid #000; padding: 6px 8px; font-size: 12.5px; font-weight: bold !important; color: #000 !important; background-color: #e5e7eb !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-            td { border: 1px solid #000; padding: 6px 8px; font-size: 12.5px; font-weight: normal !important; color: #000 !important; }
+            /* CSS KHUSUS TABEL INNER (Print) */
+            table:not(.page-layout-wrapper) { min-width: 100%; border: 1px solid #000; margin-bottom: 8px; }
+            table:not(.page-layout-wrapper) th { border: 1px solid #000; padding: 6px 8px; font-size: 12.5px; font-weight: bold !important; color: #000 !important; background-color: #e5e7eb !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            table:not(.page-layout-wrapper) td { border: 1px solid #000; padding: 6px 8px; font-size: 12.5px; font-weight: normal !important; color: #000 !important; }
             .table-responsive { border: none !important; margin-bottom: 4px !important; }
             
             .subtotal-text { font-weight: normal !important; padding: 0; }
             
             .main-title-header { text-align: center; border-top: none !important; border-bottom: 1.5px solid #000; padding: 12px 0; margin-top: 0; margin-bottom: 15px; }
             .main-title-header h1 { font-size: 18px; margin: 0; }
-            
-            .table-header-flex { border-bottom: none !important; padding-bottom: 0 !important; margin-bottom: 6px !important; }
             h3 { border-bottom: none !important; padding-bottom: 0 !important; margin-bottom: 6px !important; font-size: 13.5px; font-weight: bold; }
 
             .grid-customer { gap: 4px 15px; }
@@ -173,275 +185,279 @@
 </head>
 <body>
 
-<div class="container">
-    <div class="kop-surat">
-        <img src="Velox Logo.png" alt="Velox Design Studio Logo" class="kop-logo">
-        <div class="kop-info">
-            <h2>VELOX DESIGN STUDIO</h2>
-            <span>Arsitek dan Design Studio</span><br>
-            <span>Telp/WhatsApp: +62 812-9025-7882 | Email: interiorvelox@gmail.com</span>
-        </div>
-    </div>
+<!-- Pembungkus Tabel Layout - Trik untuk mengontrol margin header/footer PDF -->
+<table class="page-layout-wrapper">
+    <thead class="print-header-space">
+        <tr><td></td></tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                <!-- START KONTEN ASLI -->
+                <div class="container">
+                    <div class="kop-surat">
+                        <img src="Velox Logo.png" alt="Velox Design Studio Logo" class="kop-logo">
+                        <div class="kop-info">
+                            <h2>VELOX DESIGN STUDIO</h2>
+                            <span>Arsitek dan Design Studio</span><br>
+                            <span>Telp/WhatsApp: +62 812-9025-7882 | Email: interiorvelox@gmail.com</span>
+                        </div>
+                    </div>
 
-    <div class="main-title-header">
-        <h1>PENAWARAN HARGA</h1>
-    </div>
+                    <div class="main-title-header">
+                        <h1>PENAWARAN HARGA</h1>
+                    </div>
 
-    <div id="status-simpan">Tersimpan otomatis</div>
+                    <div id="status-simpan">Tersimpan otomatis</div>
 
-    <div class="card no-print" style="background-color: #fefce8; border: 1px solid #fde68a;">
-        <h3 style="color: #92400e; border-color: #fde68a;">Manajemen Proyek Tersimpan</h3>
-        <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end;">
-            <div style="flex: 2; min-width: 220px;">
-                <label style="font-size: 13px; font-weight: bold; display: block; margin-bottom: 5px;">Pilih Proyek Tersimpan</label>
-                <select id="project-selector"></select>
-            </div>
-            <button type="button" class="btn-proyek" onclick="muatProyekTerpilih()">Muat Proyek</button>
-            <button type="button" class="btn-proyek" onclick="simpanProyekBaru()">Simpan sbg Proyek Baru</button>
-            <button type="button" class="btn-proyek" onclick="gantiNamaProyekTerpilih()">Ganti Nama</button>
-            <button type="button" class="btn-proyek btn-proyek-hapus" onclick="hapusProyekTerpilih()">Hapus</button>
-        </div>
-        <p style="font-size: 12px; color: #92400e; margin-top: 10px; margin-bottom: 0;">
-            Nama proyek tersimpan bersifat kustom dan tidak otomatis menimpa nama lain.
-        </p>
-    </div>
+                    <div class="card no-print" style="background-color: #fefce8; border: 1px solid #fde68a;">
+                        <h3 style="color: #92400e; border-color: #fde68a;">Manajemen Proyek Tersimpan</h3>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end;">
+                            <div style="flex: 2; min-width: 220px;">
+                                <label style="font-size: 13px; font-weight: bold; display: block; margin-bottom: 5px;">Pilih Proyek Tersimpan</label>
+                                <select id="project-selector"></select>
+                            </div>
+                            <button type="button" class="btn-proyek" onclick="muatProyekTerpilih()">Muat Proyek</button>
+                            <button type="button" class="btn-proyek" onclick="simpanProyekBaru()">Simpan sbg Proyek Baru</button>
+                            <button type="button" class="btn-proyek" onclick="gantiNamaProyekTerpilih()">Ganti Nama</button>
+                            <button type="button" class="btn-proyek btn-proyek-hapus" onclick="hapusProyekTerpilih()">Hapus</button>
+                        </div>
+                        <p style="font-size: 12px; color: #92400e; margin-top: 10px; margin-bottom: 0;">
+                            Nama proyek tersimpan bersifat kustom dan tidak otomatis menimpa nama lain.
+                        </p>
+                    </div>
 
-    <div class="card">
-        <h3>Data Pelanggan & Proyek</h3>
-        <div class="grid-customer">
-            <div class="input-group"><label>Nama Pelanggan</label><input type="text" id="cust-nama" oninput="simpanDanHitung()"></div>
-            <div class="input-group"><label>Nama Proyek</label><input type="text" id="cust-proyek" oninput="simpanDanHitung()"></div>
-            <div class="input-group"><label>Tanggal</label><input type="date" id="cust-tanggal" oninput="simpanDanHitung()"></div>
-            <div class="input-group"><label>Lokasi</label><input type="text" id="cust-lokasi" oninput="simpanDanHitung()"></div>
-            <div class="input-group field-marketing-group"><label>Nama Marketing (Velox)</label><input type="text" id="cust-marketing" placeholder="Contoh: Christian Adiputra" oninput="simpanDanHitung()"></div>
-            <div class="input-group">
-                <label>Masa Berlaku SPH</label>
-                <div class="berlaku-options">
-                    <label><input type="radio" name="cust-berlaku" value="14" checked onchange="updateMasaBerlakuTeks(); simpanDanHitung()"> 14 Hari</label>
-                    <label><input type="radio" name="cust-berlaku" value="30" onchange="updateMasaBerlakuTeks(); simpanDanHitung()"> 30 Hari</label>
-                </div>
-                <div id="print-cust-berlaku" class="print-only" style="font-size: 12.5px; font-weight: normal; margin-top: 2px;">14 Hari</div>
-            </div>
-        </div>
-    </div>
+                    <div class="card">
+                        <h3>Data Pelanggan & Proyek</h3>
+                        <div class="grid-customer">
+                            <div class="input-group"><label>Nama Pelanggan</label><input type="text" id="cust-nama" oninput="simpanDanHitung()"></div>
+                            <div class="input-group"><label>Nama Proyek</label><input type="text" id="cust-proyek" oninput="simpanDanHitung()"></div>
+                            <div class="input-group"><label>Tanggal</label><input type="date" id="cust-tanggal" oninput="simpanDanHitung()"></div>
+                            <div class="input-group"><label>Lokasi</label><input type="text" id="cust-lokasi" oninput="simpanDanHitung()"></div>
+                            <div class="input-group field-marketing-group"><label>Nama Marketing (Velox)</label><input type="text" id="cust-marketing" placeholder="Contoh: Christian Adiputra" oninput="simpanDanHitung()"></div>
+                            <div class="input-group">
+                                <label>Masa Berlaku SPH</label>
+                                <div class="berlaku-options">
+                                    <label><input type="radio" name="cust-berlaku" value="14" checked onchange="updateMasaBerlakuTeks(); simpanDanHitung()"> 14 Hari</label>
+                                    <label><input type="radio" name="cust-berlaku" value="30" onchange="updateMasaBerlakuTeks(); simpanDanHitung()"> 30 Hari</label>
+                                </div>
+                                <div id="print-cust-berlaku" class="print-only" style="font-size: 12.5px; font-weight: normal; margin-top: 2px;">14 Hari</div>
+                            </div>
+                        </div>
+                    </div>
 
-    <div class="card no-print" style="background-color: #e0f2fe; border: 1px solid #bae6fd;">
-        <h3 style="color: #0369a1; border-color: #bae6fd;">Pengaturan Pajak & Diskon</h3>
-        <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: flex-end;">
-            <div style="flex: 1; min-width: 150px;">
-                <label style="font-size: 13px; display: block; margin-bottom: 5px; font-weight:bold;">Tipe Diskon</label>
-                <select id="tipe-diskon" onchange="gantiTipeDiskon()" style="padding: 8px;">
-                    <option value="rp">Nominal (Rp)</option>
-                    <option value="percent">Persen (%)</option>
-                </select>
-            </div>
-            <div style="flex: 1; min-width: 130px;">
-                <label style="font-size: 13px; display: block; margin-bottom: 5px; font-weight:bold;">Nilai Diskon Proyek</label>
-                <input type="text" id="input-diskon" value="0" oninput="handleDiskonInput(this)">
-            </div>
-            <div style="flex: 1.2; min-width: 180px; display: flex; align-items: center; gap: 10px; padding-bottom: 5px;">
-                <input type="checkbox" id="check-pajak" checked onchange="simpanDanHitung()" style="width: 20px; height: 20px; cursor: pointer;">
-                <label for="check-pajak" style="font-size: 13px; font-weight: bold; color: #0369a1; cursor: pointer; margin: 0;">Gunakan Pajak PPN (11%)</label>
-            </div>
-        </div>
-    </div>
+                    <div class="card no-print" style="background-color: #e0f2fe; border: 1px solid #bae6fd;">
+                        <h3 style="color: #0369a1; border-color: #bae6fd;">Pengaturan Margin, Pajak & Diskon</h3>
+                        <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: flex-end;">
+                            <div style="flex: 1; min-width: 130px;">
+                                <label style="font-size: 13px; display: block; margin-bottom: 5px; font-weight:bold;">Biaya Tak Terduga (%)</label>
+                                <input type="number" id="persen-contingency" min="0" value="3" oninput="validasiPersen(this); simpanDanHitung()">
+                            </div>
+                            <div style="flex: 1; min-width: 130px;">
+                                <label style="font-size: 13px; display: block; margin-bottom: 5px; font-weight:bold;">Target Keuntungan (%)</label>
+                                <input type="number" id="persen-profit" min="0" value="15" oninput="validasiPersen(this); simpanDanHitung()">
+                            </div>
+                            <div style="flex: 1; min-width: 150px;">
+                                <label style="font-size: 13px; display: block; margin-bottom: 5px; font-weight:bold;">Tipe Diskon</label>
+                                <select id="tipe-diskon" onchange="gantiTipeDiskon()" style="padding: 8px;">
+                                    <option value="rp">Nominal (Rp)</option>
+                                    <option value="percent">Persen (%)</option>
+                                </select>
+                            </div>
+                            <div style="flex: 1; min-width: 130px;">
+                                <label style="font-size: 13px; display: block; margin-bottom: 5px; font-weight:bold;">Nilai Diskon</label>
+                                <input type="text" id="input-diskon" value="0" oninput="handleDiskonInput(this)">
+                            </div>
+                            <div style="flex: 1.2; min-width: 180px; display: flex; align-items: center; gap: 10px; padding-bottom: 5px;">
+                                <input type="checkbox" id="check-pajak" checked onchange="simpanDanHitung()" style="width: 20px; height: 20px; cursor: pointer;">
+                                <label for="check-pajak" style="font-size: 13px; font-weight: bold; color: #0369a1; cursor: pointer; margin: 0;">Gunakan Pajak PPN (11%)</label>
+                            </div>
+                        </div>
+                        <p style="font-size: 12px; color: #0369a1; margin-top: 10px; margin-bottom: 0;">
+                            <em>*Diskon dapat dipilih menggunakan nominal Rupiah (Rp) atau Persen (%, maksimal 100%) untuk memotong total penawaran harga. Persentase markup tidak bisa bernilai negatif.</em>
+                        </p>
+                    </div>
 
-    <div class="card">
-        <div class="table-header-flex">
-            <h3>A. Rincian Bahan & Material</h3>
-            <div class="margin-input-group no-print">
-                <label>Tak Terduga (%):</label>
-                <input type="number" id="cont-a" min="0" value="3" oninput="validasiPersen(this); simpanDanHitung()">
-                <div class="margin-divider"></div>
-                <label>Keuntungan (%):</label>
-                <input type="number" id="profit-a" min="0" value="15" oninput="validasiPersen(this); simpanDanHitung()">
-            </div>
-        </div>
-        <div class="table-responsive">
-            <table id="tbl-bahan">
-                <thead>
-                    <tr>
-                        <th class="no-col">No</th>
-                        <th>Uraian</th>
-                        <th style="width: 70px;">Vol</th>
-                        <th style="width: 140px;">Satuan</th>
-                        <th class="modal-col" style="width: 140px;">Harga Modal (Satuan)</th>
-                        <th style="width: 140px;">Harga Satuan / Unit</th>
-                        <th style="width: 130px;">Subtotal</th>
-                        <th style="width: 90px;">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-                <tfoot>
-                    <tr>
-                        <td colspan="6" class="screen-only" style="text-align: left; font-weight: bold;">Total Harga:</td>
-                        <td colspan="5" class="print-only-cell" style="text-align: left; font-weight: bold;">Total Harga:</td>
-                        <td style="text-align: right; font-weight: bold;" id="foot-total-bahan">Rp 0</td>
-                        <td class="no-print"></td>
-                    </tr>
-                </tfoot>
-            </table>
-        </div>
-        <button class="btn-add" onclick="tambahBaris('tbl-bahan', 'material')">Tambah Bahan</button>
-    </div>
+                    <div class="card">
+                        <h3>A. Rincian Bahan & Material</h3>
+                        <div class="table-responsive">
+                            <table id="tbl-bahan">
+                                <thead>
+                                    <tr>
+                                        <th class="no-col">No</th>
+                                        <th>Uraian</th>
+                                        <th style="width: 70px;">Vol</th>
+                                        <th style="width: 140px;">Satuan</th>
+                                        <th class="modal-col" style="width: 140px;">Harga Modal (Satuan)</th>
+                                        <th style="width: 140px;">Harga Satuan / Unit</th>
+                                        <th style="width: 130px;">Subtotal</th>
+                                        <th style="width: 90px;">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="6" class="screen-only" style="text-align: left; font-weight: bold;">Total Harga:</td>
+                                        <td colspan="5" class="print-only-cell" style="text-align: left; font-weight: bold;">Total Harga:</td>
+                                        <td style="text-align: right; font-weight: bold;" id="foot-total-bahan">Rp 0</td>
+                                        <td class="no-print"></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                        <button class="btn-add" onclick="tambahBaris('tbl-bahan', 'material')">Tambah Bahan</button>
+                    </div>
 
-    <div class="card">
-        <div class="table-header-flex">
-            <h3>B. Rincian Bahan Pasang / Alat Kerja</h3>
-            <div class="margin-input-group no-print">
-                <label>Tak Terduga (%):</label>
-                <input type="number" id="cont-b" min="0" value="3" oninput="validasiPersen(this); simpanDanHitung()">
-                <div class="margin-divider"></div>
-                <label>Keuntungan (%):</label>
-                <input type="number" id="profit-b" min="0" value="15" oninput="validasiPersen(this); simpanDanHitung()">
-            </div>
-        </div>
-        <div class="table-responsive">
-            <table id="tbl-alat">
-                <thead>
-                    <tr>
-                        <th class="no-col">No</th>
-                        <th>Uraian</th>
-                        <th style="width: 70px;">Vol</th>
-                        <th style="width: 140px;">Satuan</th>
-                        <th class="modal-col" style="width: 140px;">Harga Modal (Satuan)</th>
-                        <th style="width: 140px;">Harga Satuan / Unit</th>
-                        <th style="width: 130px;">Subtotal</th>
-                        <th style="width: 90px;">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-                <tfoot>
-                    <tr>
-                        <td colspan="6" class="screen-only" style="text-align: left; font-weight: bold;">Total Harga:</td>
-                        <td colspan="5" class="print-only-cell" style="text-align: left; font-weight: bold;">Total Harga:</td>
-                        <td style="text-align: right; font-weight: bold;" id="foot-total-alat">Rp 0</td>
-                        <td class="no-print"></td>
-                    </tr>
-                </tfoot>
-            </table>
-        </div>
-        <button class="btn-add" onclick="tambahBaris('tbl-alat', 'material')">Tambah Alat/Bahan Pasang</button>
-    </div>
+                    <div class="card">
+                        <h3>B. Rincian Bahan Pasang / Alat Kerja</h3>
+                        <div class="table-responsive">
+                            <table id="tbl-alat">
+                                <thead>
+                                    <tr>
+                                        <th class="no-col">No</th>
+                                        <th>Uraian</th>
+                                        <th style="width: 70px;">Vol</th>
+                                        <th style="width: 140px;">Satuan</th>
+                                        <th class="modal-col" style="width: 140px;">Harga Modal (Satuan)</th>
+                                        <th style="width: 140px;">Harga Satuan / Unit</th>
+                                        <th style="width: 130px;">Subtotal</th>
+                                        <th style="width: 90px;">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="6" class="screen-only" style="text-align: left; font-weight: bold;">Total Harga:</td>
+                                        <td colspan="5" class="print-only-cell" style="text-align: left; font-weight: bold;">Total Harga:</td>
+                                        <td style="text-align: right; font-weight: bold;" id="foot-total-alat">Rp 0</td>
+                                        <td class="no-print"></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                        <button class="btn-add" onclick="tambahBaris('tbl-alat', 'material')">Tambah Alat/Bahan Pasang</button>
+                    </div>
 
-    <div class="card">
-        <div class="table-header-flex">
-            <h3>C. Rincian Jasa & Operasional</h3>
-            <div class="margin-input-group no-print">
-                <label>Tak Terduga (%):</label>
-                <input type="number" id="cont-c" min="0" value="3" oninput="validasiPersen(this); simpanDanHitung()">
-                <div class="margin-divider"></div>
-                <label>Keuntungan (%):</label>
-                <input type="number" id="profit-c" min="0" value="15" oninput="validasiPersen(this); simpanDanHitung()">
-            </div>
-        </div>
-        <div class="table-responsive">
-            <table id="tbl-jasa">
-                <thead>
-                    <tr>
-                        <th class="no-col">No</th>
-                        <th>Uraian</th>
-                        <th style="width: 70px;">Vol</th>
-                        <th style="width: 140px;">Satuan</th>
-                        <th class="modal-col" style="width: 140px;">Harga Modal (Satuan)</th>
-                        <th style="width: 140px;">Harga Satuan / Unit</th>
-                        <th style="width: 130px;">Subtotal</th>
-                        <th style="width: 90px;">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-                <tfoot>
-                    <tr>
-                        <td colspan="6" class="screen-only" style="text-align: left; font-weight: bold;">Total Harga:</td>
-                        <td colspan="5" class="print-only-cell" style="text-align: left; font-weight: bold;">Total Harga:</td>
-                        <td style="text-align: right; font-weight: bold;" id="foot-total-jasa">Rp 0</td>
-                        <td class="no-print"></td>
-                    </tr>
-                </tfoot>
-            </table>
-        </div>
-        <button class="btn-add" onclick="tambahBaris('tbl-jasa', 'jasa')">Tambah Jasa</button>
-    </div>
+                    <div class="card">
+                        <h3>C. Rincian Jasa & Operasional</h3>
+                        <div class="table-responsive">
+                            <table id="tbl-jasa">
+                                <thead>
+                                    <tr>
+                                        <th class="no-col">No</th>
+                                        <th>Uraian</th>
+                                        <th style="width: 70px;">Vol</th>
+                                        <th style="width: 140px;">Satuan</th>
+                                        <th class="modal-col" style="width: 140px;">Harga Modal (Satuan)</th>
+                                        <th style="width: 140px;">Harga Satuan / Unit</th>
+                                        <th style="width: 130px;">Subtotal</th>
+                                        <th style="width: 90px;">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="6" class="screen-only" style="text-align: left; font-weight: bold;">Total Harga:</td>
+                                        <td colspan="5" class="print-only-cell" style="text-align: left; font-weight: bold;">Total Harga:</td>
+                                        <td style="text-align: right; font-weight: bold;" id="foot-total-jasa">Rp 0</td>
+                                        <td class="no-print"></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                        <button class="btn-add" onclick="tambahBaris('tbl-jasa', 'jasa')">Tambah Jasa</button>
+                    </div>
 
-    <div class="summary-card">
-        <h3 class="screen-only">REKAPITULASI BIAYA INTERNAL (Tidak tampil di PDF)</h3>
-        
-        <div class="flex-row screen-only"><span>Total Modal Asli (HPP):</span><span id="rek-modal">Rp 0</span></div>
-        <div class="flex-row screen-only"><span>Total Markup (Keuntungan + Tak Terduga):</span><span id="rek-markup" style="color:#4ade80;">Rp 0</span></div>
-        
-        <div class="border-top-thin summary-item-text" style="padding-top: 10px;">
-            <div style="font-weight: bold; margin-bottom: 8px; font-size: 14px;">Perhitungan Subtotal</div>
-            
-            <div class="flex-row summary-item-text rincian-subtotal" style="color: #cbd5e1; margin-bottom: 8px;">
-                <span>A & B. Subtotal Bahan, Material & Alat:</span><span id="rek-subtotal-bahan-alat">Rp 0</span>
-            </div>
-            <div class="flex-row summary-item-text rincian-subtotal" style="color: #cbd5e1; margin-bottom: 8px;">
-                <span>C. Subtotal Jasa & Operasional:</span><span id="rek-subtotal-jasa">Rp 0</span>
-            </div>
+                    <div class="summary-card">
+                        <h3 class="screen-only">REKAPITULASI BIAYA INTERNAL (Tidak tampil di PDF)</h3>
+                        
+                        <div class="flex-row screen-only"><span>Total Modal Asli (HPP):</span><span id="rek-modal">Rp 0</span></div>
+                        <div class="flex-row screen-only"><span>Total Markup (Profit + Tak Terduga):</span><span id="rek-markup" style="color:#4ade80;">Rp 0</span></div>
+                        
+                        <div class="border-top-thin summary-item-text" style="padding-top: 10px;">
+                            <div style="font-weight: bold; margin-bottom: 8px; font-size: 14px;">Perhitungan Subtotal</div>
+                            
+                            <div class="flex-row summary-item-text rincian-subtotal" style="color: #cbd5e1; margin-bottom: 8px;">
+                                <span>A. Subtotal Bahan & Material:</span><span id="rek-subtotal-bahan">Rp 0</span>
+                            </div>
+                            <div class="flex-row summary-item-text rincian-subtotal" style="color: #cbd5e1; margin-bottom: 8px;">
+                                <span>B. Subtotal Bahan Pasang / Alat:</span><span id="rek-subtotal-alat">Rp 0</span>
+                            </div>
+                            <div class="flex-row summary-item-text rincian-subtotal" style="color: #cbd5e1; margin-bottom: 8px;">
+                                <span>C. Subtotal Jasa & Operasional:</span><span id="rek-subtotal-jasa">Rp 0</span>
+                            </div>
 
-            <div class="flex-row summary-item-text" style="font-weight: bold; margin-bottom: 8px;">
-                <span>Subtotal Keseluruhan:</span><span id="print-subtotal">Rp 0</span>
-            </div>
-        </div>
+                            <div class="flex-row summary-item-text" style="font-weight: bold; margin-bottom: 8px;">
+                                <span>Subtotal Keseluruhan (A + B + C):</span><span id="print-subtotal">Rp 0</span>
+                            </div>
+                        </div>
 
-        <div class="flex-row" id="row-diskon" style="color: #f87171; margin-bottom: 8px;">
-            <span id="label-diskon-teks">Diskon Proyek:</span><span id="rek-diskon">- Rp 0</span>
-        </div>
+                        <div class="flex-row" id="row-diskon" style="color: #f87171; margin-bottom: 8px;">
+                            <span id="label-diskon-teks">Diskon Proyek:</span><span id="rek-diskon">- Rp 0</span>
+                        </div>
 
-        <div class="flex-row border-bottom-thin summary-item-text" id="row-pajak" style="margin-bottom: 8px; padding-bottom: 10px;">
-            <span>Pajak PPN (11%):</span><span id="rek-pajak">Rp 0</span>
-        </div>
-        
-        <div class="flex-row total-row" style="margin-top: 10px;">
-            <span>TOTAL PENAWARAN HARGA:</span>
-            <span id="rek-penawaran">Rp 0</span>
-        </div>
-    </div>
+                        <div class="flex-row border-bottom-thin summary-item-text" id="row-pajak" style="margin-bottom: 8px; padding-bottom: 10px;">
+                            <span>Pajak PPN (11%):</span><span id="rek-pajak">Rp 0</span>
+                        </div>
+                        
+                        <div class="flex-row total-row" style="margin-top: 10px;">
+                            <span>TOTAL PENAWARAN HARGA:</span>
+                            <span id="rek-penawaran">Rp 0</span>
+                        </div>
+                    </div>
 
-    <div class="card">
-        <h3>Termin Pembayaran, Syarat & Ketentuan</h3>
-        <div class="input-group">
-            <textarea id="input-tc" rows="6" oninput="syncPrintTC(); simpanDanHitung()">1. Pembayaran Termin I (DP) sebesar 50% dibayarkan saat persetujuan kontrak.
+                    <div class="card">
+                        <h3>Termin Pembayaran, Syarat & Ketentuan</h3>
+                        <div class="input-group">
+                            <textarea id="input-tc" rows="6" oninput="syncPrintTC(); simpanDanHitung()">1. Pembayaran Termin I (DP) sebesar 50% dibayarkan saat persetujuan kontrak.
 2. Pembayaran Termin II sebesar 30% dibayarkan saat Material on Site (MOS).
 3. Pelunasan akhir sebesar 20% diselesaikan maksimal 2 hari setelah Berita Acara Serah Terima (BAST).
 4. Waktu pengerjaan dilaksanakan sesuai dengan jadwal yang disepakati bersama.
 5. Setiap transaksi pembayaran wajib disertai bukti transfer/pembayaran yang sah.</textarea>
-            <div id="print-tc-content" class="print-tc-view">1. Pembayaran Termin I (DP) sebesar 50% dibayarkan saat persetujuan kontrak.
+                            <div id="print-tc-content" class="print-tc-view">1. Pembayaran Termin I (DP) sebesar 50% dibayarkan saat persetujuan kontrak.
 2. Pembayaran Termin II sebesar 30% dibayarkan saat Material on Site (MOS).
 3. Pelunasan akhir sebesar 20% diselesaikan maksimal 2 hari setelah Berita Acara Serah Terima (BAST).
 4. Waktu pengerjaan dilaksanakan sesuai dengan jadwal yang disepakati bersama.
 5. Setiap transaksi pembayaran wajib disertai bukti transfer/pembayaran yang sah.</div>
-        </div>
-        <div class="input-group" style="margin-top: 10px;">
-            <label style="font-weight: bold;">Informasi Rekening Pembayaran</label>
-            <input type="text" id="input-rekening" class="rekening-print-line" value="Rekening Bank BCA: 751-0938881 a.n. Christian Adiputra" oninput="simpanDanHitung()">
-        </div>
-    </div>
+                        </div>
+                        <div class="input-group" style="margin-top: 10px;">
+                            <label style="font-weight: bold;">Informasi Rekening Pembayaran</label>
+                            <input type="text" id="input-rekening" class="rekening-print-line" value="Rekening Bank BCA: 751-0938881 a.n. Christian Adiputra" oninput="simpanDanHitung()">
+                        </div>
+                    </div>
 
-    <div class="footer-pdf print-only print-only-block" style="margin-top: 25px; page-break-inside: avoid;">
-        <div style="display: flex; justify-content: space-between; width: 100%; align-items: flex-end;">
-            <div style="display: inline-block; text-align: center; width: 230px;">
-                <p style="margin-bottom: 60px; font-size: 12.5px;">Disetujui Oleh,<br><b>Pelanggan / Klien</b></p>
-                <p style="font-weight: normal; font-size: 12.5px; margin-bottom: 0;">( <span id="sig-cust-nama">___________________</span> )</p>
-            </div>
-            
-            <div style="display: inline-block; text-align: center; width: 230px;">
-                <p id="sig-tgl-lokasi" style="font-size: 12.5px; margin-bottom: 5px; color: #1f2937; font-weight: normal;"></p>
-                <p style="margin-top: 0; margin-bottom: 60px; font-size: 12.5px;">Hormat Kami,<br><b>Velox Design Studio</b></p>
-                <p style="font-weight: normal; font-size: 12.5px; margin-bottom: 0;">( <span id="sig-marketing-nama">___________________</span> )</p>
-            </div>
-        </div>
-    </div>
+                    <div class="footer-pdf print-only print-only-block" style="margin-top: 25px; page-break-inside: avoid;">
+                        <div style="display: flex; justify-content: space-between; width: 100%; align-items: flex-end;">
+                            <div style="display: inline-block; text-align: center; width: 230px;">
+                                <p style="margin-bottom: 60px; font-size: 12.5px;">Disetujui Oleh,<br><b>Pelanggan / Klien</b></p>
+                                <p style="font-weight: normal; font-size: 12.5px; margin-bottom: 0;">( <span id="sig-cust-nama">___________________</span> )</p>
+                            </div>
+                            
+                            <div style="display: inline-block; text-align: center; width: 230px;">
+                                <p id="sig-tgl-lokasi" style="font-size: 12.5px; margin-bottom: 5px; color: #1f2937; font-weight: normal;"></p>
+                                <p style="margin-top: 0; margin-bottom: 60px; font-size: 12.5px;">Hormat Kami,<br><b>Velox Design Studio</b></p>
+                                <p style="font-weight: normal; font-size: 12.5px; margin-bottom: 0;">( <span id="sig-marketing-nama">___________________</span> )</p>
+                            </div>
+                        </div>
+                    </div>
 
-    <div class="card no-print" style="margin-top: 15px; background-color: #f8fafc;">
-        <div class="header-action" style="margin-bottom: 0;">
-            <div class="btn-group">
-                <button class="btn-reset" onclick="resetData()">Buat RAB Baru</button>
-                <button class="btn-print" onclick="window.print()">Ekspor PDF / Cetak</button>
-            </div>
-        </div>
-    </div>
-</div>
+                    <div class="card no-print" style="margin-top: 15px; background-color: #f8fafc;">
+                        <div class="header-action" style="margin-bottom: 0;">
+                            <div class="btn-group">
+                                <button class="btn-reset" onclick="resetData()">Buat RAB Baru</button>
+                                <button class="btn-print" onclick="window.print()">Ekspor PDF / Cetak</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- END KONTEN ASLI -->
+            </td>
+        </tr>
+    </tbody>
+    <tfoot class="print-footer-space">
+        <tr><td></td></tr>
+    </tfoot>
+</table>
 
 <script>
     const formatRupiah = (angka) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(angka);
@@ -518,9 +534,9 @@
         if (printEl) printEl.innerText = `${val} Hari`;
     }
 
-    const KEY_PROJECTS = 'dataRABVeloxProjects_v4';
-    const KEY_ACTIVE = 'dataRABVeloxActiveId_v4';
-    const KEY_LEGACY = 'dataRABVeloxProjects_v3';
+    const KEY_PROJECTS = 'dataRABVeloxProjects_v3';
+    const KEY_ACTIVE = 'dataRABVeloxActiveId_v3';
+    const KEY_LEGACY = 'dataRABVeloxProjects_v2';
 
     function generateId() {
         return 'p_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 8);
@@ -564,7 +580,7 @@
             if (!dataLama) return;
             const parsed = JSON.parse(dataLama);
             saveProjects(parsed);
-            setActiveId(localStorage.getItem('dataRABVeloxActiveId_v3'));
+            setActiveId(localStorage.getItem('dataRABVeloxActiveId_v2'));
         } catch (e) { }
     }
 
@@ -672,12 +688,8 @@
             tc: document.getElementById('input-tc').value,
             rekening: document.getElementById('input-rekening').value,
             pengaturan: {
-                contA: document.getElementById('cont-a').value,
-                profitA: document.getElementById('profit-a').value,
-                contB: document.getElementById('cont-b').value,
-                profitB: document.getElementById('profit-b').value,
-                contC: document.getElementById('cont-c').value,
-                profitC: document.getElementById('profit-c').value,
+                contingency: document.getElementById('persen-contingency').value,
+                profit: document.getElementById('persen-profit').value,
                 tipeDiskon: document.getElementById('tipe-diskon').value,
                 diskon: document.getElementById('input-diskon').value,
                 usePajak: document.getElementById('check-pajak').checked
@@ -686,6 +698,12 @@
     }
 
     function gantiTipeDiskon() {
+        // BUGFIX: sebelumnya nilai diskon dicoba "dikonversi" otomatis antara Rp <-> %,
+        // tapi parseFloat() salah membaca titik pemisah ribuan sebagai titik desimal
+        // (mis. "12.500.000" terbaca 12.5). Tidak ada konversi Rp<->% yang benar secara
+        // matematis, jadi nilai diskon di-reset ke 0 setiap kali tipe diganti — user
+        // tinggal isi ulang sesuai tipe yang baru dipilih, supaya tidak ada nilai yang
+        // diam-diam salah tanpa disadari.
         const inputDiskon = document.getElementById('input-diskon');
         inputDiskon.value = '0';
         simpanDanHitung();
@@ -733,15 +751,25 @@
     let timeoutAutosave;
 
     function simpanDanHitung() {
+        // OPTIMASI: bagian ini harus terasa instan di setiap ketukan keyboard —
+        // hitung ulang angka, judul tab, info tanda tangan, dan sinkron tampilan cetak T&C.
+        // Tidak ada operasi localStorage di sini, jadi ringan walau dipanggil terus-menerus.
         hitungSemua();
         updateJudulHalaman();
         updateTandaTanganInfo();
         syncPrintTC();
 
+        // OPTIMASI: penulisan ke localStorage (baca+tulis SELURUH daftar proyek + render ulang
+        // dropdown "Pilih Proyek Tersimpan") di-debounce 400ms setelah user berhenti mengetik.
+        // Tanpa ini, tiap satu huruf yang diketik akan JSON.parse+JSON.stringify seluruh
+        // riwayat proyek tersimpan dan me-render ulang <select> — makin berat seiring
+        // banyaknya proyek yang tersimpan.
         clearTimeout(timeoutAutosave);
         timeoutAutosave = setTimeout(simpanKeStorage, 400);
     }
 
+    // Pengaman: kalau tab ditutup/refresh persis saat debounce di atas belum sempat jalan,
+    // paksa simpan segera supaya tidak ada perubahan terakhir yang hilang.
     window.addEventListener('beforeunload', () => {
         if (timeoutAutosave) {
             clearTimeout(timeoutAutosave);
@@ -1009,18 +1037,8 @@
     }
 
     function hitungSemua() {
-        const pContA = Math.max(0, parseFloat(document.getElementById('cont-a').value) || 0);
-        const pProfitA = Math.max(0, parseFloat(document.getElementById('profit-a').value) || 0);
-        const pMarginA = pContA + pProfitA;
-
-        const pContB = Math.max(0, parseFloat(document.getElementById('cont-b').value) || 0);
-        const pProfitB = Math.max(0, parseFloat(document.getElementById('profit-b').value) || 0);
-        const pMarginB = pContB + pProfitB;
-
-        const pContC = Math.max(0, parseFloat(document.getElementById('cont-c').value) || 0);
-        const pProfitC = Math.max(0, parseFloat(document.getElementById('profit-c').value) || 0);
-        const pMarginC = pContC + pProfitC;
-        
+        const pContingency = Math.max(0, parseFloat(document.getElementById('persen-contingency').value) || 0);
+        const pProfit = Math.max(0, parseFloat(document.getElementById('persen-profit').value) || 0);
         const tipeDiskon = document.getElementById('tipe-diskon').value;
         const rawDiskonInput = document.getElementById('input-diskon').value;
         let valDiskonInput = parseFloat(rawDiskonInput.toString().replace(/[^0-9.]/g, '')) || 0;
@@ -1029,16 +1047,18 @@
         const usePajak = document.getElementById('check-pajak').checked;
         const pPajak = usePajak ? 11 : 0;
 
-        const dataBahan = hitungSubtotalTabel('tbl-bahan', pMarginA);
-        const dataAlat = hitungSubtotalTabel('tbl-alat', pMarginB);
-        const dataJasa = hitungSubtotalTabel('tbl-jasa', pMarginC);
+        const totalMarkupPersen = pContingency + pProfit;
+
+        const dataBahan = hitungSubtotalTabel('tbl-bahan', totalMarkupPersen);
+        const dataAlat = hitungSubtotalTabel('tbl-alat', totalMarkupPersen);
+        const dataJasa = hitungSubtotalTabel('tbl-jasa', totalMarkupPersen);
 
         document.getElementById('foot-total-bahan').innerText = formatRupiah(dataBahan.totalJual);
         document.getElementById('foot-total-alat').innerText = formatRupiah(dataAlat.totalJual);
         document.getElementById('foot-total-jasa').innerText = formatRupiah(dataJasa.totalJual);
 
-        const totalBahanAlat = dataBahan.totalJual + dataAlat.totalJual;
-        document.getElementById('rek-subtotal-bahan-alat').innerText = formatRupiah(totalBahanAlat);
+        document.getElementById('rek-subtotal-bahan').innerText = formatRupiah(dataBahan.totalJual);
+        document.getElementById('rek-subtotal-alat').innerText = formatRupiah(dataAlat.totalJual);
         document.getElementById('rek-subtotal-jasa').innerText = formatRupiah(dataJasa.totalJual);
 
         const totalModalKeseluruhan = dataBahan.totalModal + dataAlat.totalModal + dataJasa.totalModal;
@@ -1092,29 +1112,9 @@
             document.getElementById('cust-marketing').value = data.pelanggan.marketing || '';
             setSelectedMasaBerlaku(data.pelanggan.berlaku || '14');
         }
-        
         if (data.pengaturan) {
-            // Ambil data versi lama untuk mencegah margin jadi nol saat buka proyek lawas
-            let cGlob = data.pengaturan.contingency !== undefined ? parseFloat(data.pengaturan.contingency) : 3;
-            let pGlob = data.pengaturan.profit !== undefined ? parseFloat(data.pengaturan.profit) : 15;
-
-            const setMargin = (contId, profitId, dCont, dProfit, dMarginOld) => {
-                if (dCont !== undefined && dProfit !== undefined) {
-                    document.getElementById(contId).value = dCont;
-                    document.getElementById(profitId).value = dProfit;
-                } else if (dMarginOld !== undefined) {
-                    document.getElementById(contId).value = 0;
-                    document.getElementById(profitId).value = dMarginOld;
-                } else {
-                    document.getElementById(contId).value = cGlob;
-                    document.getElementById(profitId).value = pGlob;
-                }
-            };
-
-            setMargin('cont-a', 'profit-a', data.pengaturan.contA, data.pengaturan.profitA, data.pengaturan.marginA);
-            setMargin('cont-b', 'profit-b', data.pengaturan.contB, data.pengaturan.profitB, data.pengaturan.marginB);
-            setMargin('cont-c', 'profit-c', data.pengaturan.contC, data.pengaturan.profitC, data.pengaturan.marginC);
-
+            document.getElementById('persen-contingency').value = data.pengaturan.contingency !== undefined ? data.pengaturan.contingency : 3;
+            document.getElementById('persen-profit').value = data.pengaturan.profit !== undefined ? data.pengaturan.profit : 15;
             if (data.pengaturan.tipeDiskon) {
                 document.getElementById('tipe-diskon').value = data.pengaturan.tipeDiskon;
             }
@@ -1123,7 +1123,6 @@
                 document.getElementById('check-pajak').checked = data.pengaturan.usePajak;
             }
         }
-        
         if (data.tc !== undefined) {
             document.getElementById('input-tc').value = data.tc;
         }
@@ -1181,14 +1180,8 @@
         document.getElementById('cust-lokasi').value = '';
         document.getElementById('cust-marketing').value = '';
         setSelectedMasaBerlaku('14');
-        
-        document.getElementById('cont-a').value = 3;
-        document.getElementById('profit-a').value = 15;
-        document.getElementById('cont-b').value = 3;
-        document.getElementById('profit-b').value = 15;
-        document.getElementById('cont-c').value = 3;
-        document.getElementById('profit-c').value = 15;
-        
+        document.getElementById('persen-contingency').value = 3;
+        document.getElementById('persen-profit').value = 15;
         document.getElementById('tipe-diskon').value = 'rp';
         document.getElementById('input-diskon').value = '0';
         document.getElementById('check-pajak').checked = true;
