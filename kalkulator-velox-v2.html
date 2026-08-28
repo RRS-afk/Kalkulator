@@ -39,7 +39,6 @@
         .btn-proyek-hapus:hover { background: #fecaca; }
 
         .card { background: #ffffff; border-radius: 8px; padding: 12px 15px; margin-bottom: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.04); }
-        /* Perbaikan: card bersarang (pengaturan margin per kategori) tidak perlu shadow ganda */
         .card .card { box-shadow: none; }
         h3 { margin-top: 0; color: #111827; font-size: 15px; border-bottom: 2px solid #e5e7eb; padding-bottom: 6px; margin-bottom: 10px; }
 
@@ -110,11 +109,6 @@
         .kop-info h2 { margin: 0; color: #111827; font-size: 17px; }
 
         @media print {
-            /* Margin cetak standar. Catatan: teks header/footer bawaan browser (URL, judul, tanggal)
-               TIDAK bisa dihilangkan lewat CSS - itu hanya bisa dimatikan manual lewat
-               opsi "Headers and Footers" di dialog print browser. Trik table wrapper sebelumnya
-               tidak benar-benar menghilangkan itu, dan justru berisiko menyebabkan halaman blank
-               di beberapa versi Chrome/Edge, jadi trik itu dihapus dan diganti margin standar. */
             @page { margin: 15mm; }
 
             body { background-color: #ffffff; color: #000; padding: 0 !important; margin: 0 !important; }
@@ -208,16 +202,16 @@
     <div class="card">
         <h3>Data Pelanggan & Proyek</h3>
         <div class="grid-customer">
-            <div class="input-group"><label>Nama Pelanggan</label><input type="text" id="cust-nama" oninput="simpanDanHitung()"></div>
-            <div class="input-group"><label>Nama Proyek</label><input type="text" id="cust-proyek" oninput="simpanDanHitung()"></div>
-            <div class="input-group"><label>Tanggal</label><input type="date" id="cust-tanggal" oninput="simpanDanHitung()"></div>
-            <div class="input-group"><label>Lokasi</label><input type="text" id="cust-lokasi" oninput="simpanDanHitung()"></div>
-            <div class="input-group field-marketing-group"><label>Nama Marketing (Velox)</label><input type="text" id="cust-marketing" placeholder="Contoh: Christian Adiputra" oninput="simpanDanHitung()"></div>
+            <div class="input-group"><label>Nama Pelanggan</label><input type="text" id="cust-nama" oninput="debouncedSave()"></div>
+            <div class="input-group"><label>Nama Proyek</label><input type="text" id="cust-proyek" oninput="debouncedSave()"></div>
+            <div class="input-group"><label>Tanggal</label><input type="date" id="cust-tanggal" oninput="debouncedSave()"></div>
+            <div class="input-group"><label>Lokasi</label><input type="text" id="cust-lokasi" oninput="debouncedSave()"></div>
+            <div class="input-group field-marketing-group"><label>Nama Marketing (Velox)</label><input type="text" id="cust-marketing" placeholder="Contoh: Christian Adiputra" oninput="debouncedSave()"></div>
             <div class="input-group">
                 <label>Masa Berlaku SPH</label>
                 <div class="berlaku-options">
-                    <label><input type="radio" name="cust-berlaku" value="14" checked onchange="updateMasaBerlakuTeks(); simpanDanHitung()"> 14 Hari</label>
-                    <label><input type="radio" name="cust-berlaku" value="30" onchange="updateMasaBerlakuTeks(); simpanDanHitung()"> 30 Hari</label>
+                    <label><input type="radio" name="cust-berlaku" value="14" checked onchange="updateMasaBerlakuTeks(); debouncedSave()"> 14 Hari</label>
+                    <label><input type="radio" name="cust-berlaku" value="30" onchange="updateMasaBerlakuTeks(); debouncedSave()"> 30 Hari</label>
                 </div>
                 <div id="print-cust-berlaku" class="print-only" style="font-size: 12.5px; font-weight: normal; margin-top: 2px;">14 Hari</div>
             </div>
@@ -227,7 +221,7 @@
     <div class="card no-print" style="background-color: #f0fdf4; border: 1px solid #bbf7d0;">
         <h3 style="color: #166534; border-color: #bbf7d0; font-size: 14px; margin-bottom: 8px;">Pengaturan Pajak Global</h3>
         <div style="display: flex; align-items: center; gap: 10px;">
-            <input type="checkbox" id="check-pajak-global" checked onchange="simpanDanHitung()" style="width: 20px; height: 20px; cursor: pointer;">
+            <input type="checkbox" id="check-pajak-global" checked onchange="debouncedSave()" style="width: 20px; height: 20px; cursor: pointer;">
             <label for="check-pajak-global" style="font-size: 13px; font-weight: bold; color: #166534; cursor: pointer; margin: 0;">Gunakan Pajak PPN (11%) untuk Keseluruhan Penawaran (A + B + C)</label>
         </div>
     </div>
@@ -240,11 +234,11 @@
             <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end;">
                 <div style="flex: 1; min-width: 110px;">
                     <label style="font-size: 12px; display: block; margin-bottom: 4px; font-weight:bold;">Biaya Tak Terduga (%)</label>
-                    <input type="number" id="persen-contingency-bahan" min="0" value="3" oninput="validasiPersen(this); simpanDanHitung()">
+                    <input type="number" id="persen-contingency-bahan" min="0" value="3" oninput="validasiPersen(this); debouncedSave()">
                 </div>
                 <div style="flex: 1; min-width: 110px;">
                     <label style="font-size: 12px; display: block; margin-bottom: 4px; font-weight:bold;">Target Keuntungan (%)</label>
-                    <input type="number" id="persen-profit-bahan" min="0" value="15" oninput="validasiPersen(this); simpanDanHitung()">
+                    <input type="number" id="persen-profit-bahan" min="0" value="15" oninput="validasiPersen(this); debouncedSave()">
                 </div>
                 <div style="flex: 1; min-width: 130px;">
                     <label style="font-size: 12px; display: block; margin-bottom: 4px; font-weight:bold;">Tipe Diskon</label>
@@ -296,11 +290,11 @@
             <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end;">
                 <div style="flex: 1; min-width: 110px;">
                     <label style="font-size: 12px; display: block; margin-bottom: 4px; font-weight:bold;">Biaya Tak Terduga (%)</label>
-                    <input type="number" id="persen-contingency-alat" min="0" value="3" oninput="validasiPersen(this); simpanDanHitung()">
+                    <input type="number" id="persen-contingency-alat" min="0" value="3" oninput="validasiPersen(this); debouncedSave()">
                 </div>
                 <div style="flex: 1; min-width: 110px;">
                     <label style="font-size: 12px; display: block; margin-bottom: 4px; font-weight:bold;">Target Keuntungan (%)</label>
-                    <input type="number" id="persen-profit-alat" min="0" value="15" oninput="validasiPersen(this); simpanDanHitung()">
+                    <input type="number" id="persen-profit-alat" min="0" value="15" oninput="validasiPersen(this); debouncedSave()">
                 </div>
                 <div style="flex: 1; min-width: 130px;">
                     <label style="font-size: 12px; display: block; margin-bottom: 4px; font-weight:bold;">Tipe Diskon</label>
@@ -352,11 +346,11 @@
             <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end;">
                 <div style="flex: 1; min-width: 110px;">
                     <label style="font-size: 12px; display: block; margin-bottom: 4px; font-weight:bold;">Biaya Tak Terduga (%)</label>
-                    <input type="number" id="persen-contingency-jasa" min="0" value="3" oninput="validasiPersen(this); simpanDanHitung()">
+                    <input type="number" id="persen-contingency-jasa" min="0" value="3" oninput="validasiPersen(this); debouncedSave()">
                 </div>
                 <div style="flex: 1; min-width: 110px;">
                     <label style="font-size: 12px; display: block; margin-bottom: 4px; font-weight:bold;">Target Keuntungan (%)</label>
-                    <input type="number" id="persen-profit-jasa" min="0" value="15" oninput="validasiPersen(this); simpanDanHitung()">
+                    <input type="number" id="persen-profit-jasa" min="0" value="15" oninput="validasiPersen(this); debouncedSave()">
                 </div>
                 <div style="flex: 1; min-width: 130px;">
                     <label style="font-size: 12px; display: block; margin-bottom: 4px; font-weight:bold;">Tipe Diskon</label>
@@ -438,7 +432,7 @@
     <div class="card">
         <h3>Termin Pembayaran, Syarat & Ketentuan</h3>
         <div class="input-group">
-            <textarea id="input-tc" rows="6" oninput="syncPrintTC(); simpanDanHitung()">1. Pembayaran Termin I (DP) sebesar 50% dibayarkan saat persetujuan kontrak.
+            <textarea id="input-tc" rows="6" oninput="syncPrintTC(); debouncedSave()">1. Pembayaran Termin I (DP) sebesar 50% dibayarkan saat persetujuan kontrak.
 2. Pembayaran Termin II sebesar 30% dibayarkan saat Material on Site (MOS).
 3. Pelunasan akhir sebesar 20% diselesaikan maksimal 2 hari setelah Berita Acara Serah Terima (BAST).
 4. Waktu pengerjaan dilaksanakan sesuai dengan jadwal yang disepakati bersama.
@@ -451,7 +445,7 @@
         </div>
         <div class="input-group" style="margin-top: 10px;">
             <label style="font-weight: bold;">Informasi Rekening Pembayaran</label>
-            <input type="text" id="input-rekening" class="rekening-print-line" value="Rekening Bank BCA: 751-0938881 a.n. Christian Adiputra" oninput="simpanDanHitung()">
+            <input type="text" id="input-rekening" class="rekening-print-line" value="Rekening Bank BCA: 751-0938881 a.n. Christian Adiputra" oninput="debouncedSave()">
         </div>
     </div>
 
@@ -481,10 +475,33 @@
 </div>
 
 <script>
-    const formatRupiah = (angka) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(angka);
-    function getAngka(inputVal) { return parseFloat(inputVal.toString().replace(/[^0-9]/g, '')) || 0; }
+    // ============================================================
+    // 1. UTILITY FUNCTIONS
+    // ============================================================
+    
+    /**
+     * Format angka ke format Rupiah
+     */
+    const formatRupiah = (angka) => new Intl.NumberFormat('id-ID', { 
+        style: 'currency', 
+        currency: 'IDR', 
+        maximumFractionDigits: 0 
+    }).format(angka);
 
+    /**
+     * Mendapatkan nilai angka dari input string (menghapus karakter non-digit)
+     * FIXED: Menangani undefined/null dengan aman
+     */
+    function getAngka(inputVal) {
+        if (inputVal === undefined || inputVal === null || inputVal === '') return 0;
+        return parseFloat(String(inputVal).replace(/[^0-9]/g, '')) || 0;
+    }
+
+    /**
+     * Escape HTML untuk keamanan
+     */
     function escapeHtml(str) {
+        if (!str) return '';
         return String(str)
             .replace(/&/g, '&amp;')
             .replace(/</g, '&lt;')
@@ -493,6 +510,38 @@
             .replace(/'/g, '&#039;');
     }
 
+    /**
+     * Validasi angka minimal 0
+     */
+    function validateNumber(value, min = 0, max = Infinity) {
+        const num = parseFloat(value);
+        if (isNaN(num) || num < min) return min;
+        if (num > max) return max;
+        return num;
+    }
+
+    /**
+     * Debounce function untuk optimasi performa
+     */
+    function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+
+    // ============================================================
+    // 2. UI SYNC FUNCTIONS
+    // ============================================================
+
+    /**
+     * Sinkronisasi textarea uraian dengan view print
+     */
     function syncPrintUraian(textareaEl) {
         const row = textareaEl.closest('tr');
         if (!row) return;
@@ -502,6 +551,9 @@
         }
     }
 
+    /**
+     * Sinkronisasi TC dengan view print
+     */
     function syncPrintTC() {
         const tcEl = document.getElementById('input-tc');
         const printTcEl = document.getElementById('print-tc-content');
@@ -510,6 +562,9 @@
         }
     }
 
+    /**
+     * Update informasi tanda tangan
+     */
     function updateTandaTanganInfo() {
         const namaPelanggan = document.getElementById('cust-nama').value.trim();
         const sigNamaEl = document.getElementById('sig-cust-nama');
@@ -537,11 +592,32 @@
         }
     }
 
+    /**
+     * Update judul halaman
+     */
+    function updateJudulHalaman() {
+        const namaProyek = document.getElementById('cust-proyek').value.trim();
+        const namaPelanggan = document.getElementById('cust-nama').value.trim();
+        let judul = 'Penawaran Harga - Velox Interior';
+        if (namaProyek) {
+            judul = `Penawaran - ${namaProyek}`;
+        } else if (namaPelanggan) {
+            judul = `Penawaran - ${namaPelanggan}`;
+        }
+        document.title = judul;
+    }
+
+    /**
+     * Get selected masa berlaku
+     */
     function getSelectedMasaBerlaku() {
         const checkedRadio = document.querySelector('input[name="cust-berlaku"]:checked');
         return checkedRadio ? checkedRadio.value : '14';
     }
 
+    /**
+     * Set selected masa berlaku
+     */
     function setSelectedMasaBerlaku(val) {
         const targetVal = (val === '30' || val == 30) ? '30' : '14';
         const radio = document.querySelector(`input[name="cust-berlaku"][value="${targetVal}"]`);
@@ -549,38 +625,65 @@
         updateMasaBerlakuTeks();
     }
 
+    /**
+     * Update text masa berlaku
+     */
     function updateMasaBerlakuTeks() {
         const val = getSelectedMasaBerlaku();
         const printEl = document.getElementById('print-cust-berlaku');
         if (printEl) printEl.innerText = `${val} Hari`;
     }
 
+    // ============================================================
+    // 3. STORAGE MANAGEMENT (dengan error handling)
+    // ============================================================
+
     const KEY_PROJECTS = 'dataRABVeloxProjects_v4';
     const KEY_ACTIVE = 'dataRABVeloxActiveId_v4';
     const KEY_LEGACY = 'dataRABVeloxProjects_v3';
     const KEY_LEGACY_ACTIVE = 'dataRABVeloxActiveId_v3';
 
+    /**
+     * Generate unique ID
+     */
     function generateId() {
         return 'p_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 8);
     }
 
+    /**
+     * Get projects from localStorage dengan error handling
+     */
     function getProjects() {
         try {
             return JSON.parse(localStorage.getItem(KEY_PROJECTS)) || [];
         } catch (e) {
+            console.error('Error reading projects:', e);
             return [];
         }
     }
 
+    /**
+     * Save projects to localStorage dengan error handling
+     */
     function saveProjects(list) {
         try {
-            localStorage.setItem(KEY_PROJECTS, JSON.stringify(list));
+            const data = JSON.stringify(list);
+            // Warning jika data terlalu besar
+            if (data.length > 5 * 1024 * 1024) {
+                console.warn('Data proyek besar (>5MB), pertimbangkan kompresi');
+            }
+            localStorage.setItem(KEY_PROJECTS, data);
             return true;
         } catch (e) {
+            console.error('Error saving projects:', e);
+            alert('Gagal menyimpan proyek. Penyimpanan browser penuh atau diblokir.');
             return false;
         }
     }
 
+    /**
+     * Get active project ID
+     */
     function getActiveId() {
         try {
             return localStorage.getItem(KEY_ACTIVE) || null;
@@ -588,13 +691,22 @@
             return null;
         }
     }
+
+    /**
+     * Set active project ID
+     */
     function setActiveId(id) {
         try {
             if (id) localStorage.setItem(KEY_ACTIVE, id);
             else localStorage.removeItem(KEY_ACTIVE);
-        } catch (e) { }
+        } catch (e) {
+            console.error('Error setting active ID:', e);
+        }
     }
 
+    /**
+     * Migrasi data dari versi lama
+     */
     function migrasiDataLama() {
         try {
             if (localStorage.getItem(KEY_PROJECTS)) return;
@@ -603,9 +715,18 @@
             const parsed = JSON.parse(dataLama);
             saveProjects(parsed);
             setActiveId(localStorage.getItem(KEY_LEGACY_ACTIVE));
-        } catch (e) { }
+        } catch (e) {
+            console.error('Migration error:', e);
+        }
     }
 
+    // ============================================================
+    // 4. PROJECT MANAGEMENT
+    // ============================================================
+
+    /**
+     * Render daftar proyek di dropdown
+     */
     function renderDaftarProyek() {
         const list = getProjects().slice().sort((a, b) => b.updatedAt - a.updatedAt);
         const sel = document.getElementById('project-selector');
@@ -629,6 +750,9 @@
         }
     }
 
+    /**
+     * Muat proyek terpilih
+     */
     function muatProyekTerpilih() {
         const id = document.getElementById('project-selector').value;
         if (!id) return;
@@ -640,6 +764,9 @@
         renderDaftarProyek();
     }
 
+    /**
+     * Simpan proyek baru
+     */
     function simpanProyekBaru() {
         const nama = prompt('Masukkan nama khusus untuk proyek baru ini:', 'Draft Proyek ' + new Date().toLocaleDateString('id-ID'));
         if (nama === null) return;
@@ -658,6 +785,9 @@
         tampilkanStatusSimpan(true);
     }
 
+    /**
+     * Ganti nama proyek terpilih
+     */
     function gantiNamaProyekTerpilih() {
         const id = document.getElementById('project-selector').value;
         if (!id) return;
@@ -679,6 +809,9 @@
         renderDaftarProyek();
     }
 
+    /**
+     * Hapus proyek terpilih
+     */
     function hapusProyekTerpilih() {
         const id = document.getElementById('project-selector').value;
         if (!id) return;
@@ -694,6 +827,13 @@
         renderDaftarProyek();
     }
 
+    // ============================================================
+    // 5. FORM DATA MANAGEMENT
+    // ============================================================
+
+    /**
+     * Ambil pengaturan tabel per kategori
+     */
     function ambilPengaturanTabel(suffix) {
         return {
             contingency: document.getElementById('persen-contingency-' + suffix).value,
@@ -703,6 +843,10 @@
         };
     }
 
+    /**
+     * Ambil snapshot form lengkap
+     * FIXED: Menyimpan globalPajak dengan benar
+     */
     function ambilFormSnapshot() {
         return {
             pelanggan: {
@@ -727,116 +871,9 @@
         };
     }
 
-    function gantiTipeDiskon(suffix) {
-        document.getElementById('input-diskon-' + suffix).value = '0';
-        simpanDanHitung();
-    }
-
-    function handleDiskonInput(input, suffix) {
-        const tipe = document.getElementById('tipe-diskon-' + suffix).value;
-        if (tipe === 'percent') {
-            input.value = input.value.replace(/[^0-9.]/g, '');
-            let v = parseFloat(input.value);
-            if (!isNaN(v) && v > 100) {
-                input.value = '100';
-            }
-        } else {
-            const digits = input.value.replace(/[^0-9]/g, '');
-            input.value = digits === '' ? '' : new Intl.NumberFormat('id-ID').format(parseInt(digits, 10));
-        }
-        simpanDanHitung();
-    }
-
-    function validasiPersen(el) {
-        if (el.value === '') return;
-        let v = parseFloat(el.value);
-        if (isNaN(v) || v < 0) el.value = 0;
-    }
-
-    function validasiQty(el) {
-        if (el.value === '') return;
-        let v = parseFloat(el.value);
-        if (isNaN(v) || v < 0) el.value = 0;
-    }
-
-    function validasiUraian(el) {
-        const row = el.closest('tr');
-        const qty = parseFloat(row.querySelector('.qty').value) || 0;
-        const modal = getAngka(row.querySelector('.price-modal').value);
-        if (el.value.trim() === '' && (qty > 0 || modal > 0)) {
-            el.classList.add('input-warning');
-        } else {
-            el.classList.remove('input-warning');
-        }
-    }
-
-    let timeoutSimpan;
-    let timeoutAutosave;
-
-    function simpanDanHitung() {
-        hitungSemua();
-        updateJudulHalaman();
-        updateTandaTanganInfo();
-        syncPrintTC();
-
-        clearTimeout(timeoutAutosave);
-        timeoutAutosave = setTimeout(simpanKeStorage, 400);
-    }
-
-    window.addEventListener('beforeunload', () => {
-        if (timeoutAutosave) {
-            clearTimeout(timeoutAutosave);
-            simpanKeStorage();
-        }
-    });
-
-    function updateJudulHalaman() {
-        const namaProyek = document.getElementById('cust-proyek').value.trim();
-        const namaPelanggan = document.getElementById('cust-nama').value.trim();
-        let judul = 'Penawaran Harga - Velox Interior';
-        if (namaProyek) {
-            judul = `Penawaran - ${namaProyek}`;
-        } else if (namaPelanggan) {
-            judul = `Penawaran - ${namaPelanggan}`;
-        }
-        document.title = judul;
-    }
-
-    function simpanKeStorage() {
-        const data = ambilFormSnapshot();
-        const list = getProjects();
-        let activeId = getActiveId();
-        let project = list.find(p => p.id === activeId);
-
-        if (!project) {
-            const namaAwal = 'Proyek ' + new Date().toLocaleDateString('id-ID') + ' (' + new Date().toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'}) + ')';
-            project = { id: generateId(), nama: namaAwal, updatedAt: Date.now(), data: data };
-            list.push(project);
-            setActiveId(project.id);
-        } else {
-            project.data = data;
-            project.updatedAt = Date.now();
-        }
-
-        const berhasil = saveProjects(list);
-        renderDaftarProyek();
-        tampilkanStatusSimpan(berhasil);
-    }
-
-    function tampilkanStatusSimpan(berhasil) {
-        const status = document.getElementById('status-simpan');
-        if (berhasil) {
-            status.textContent = 'Tersimpan otomatis';
-            status.style.color = '#10b981';
-        } else {
-            status.textContent = 'Gagal menyimpan! Penyimpanan lokal penuh atau diblokir browser.';
-            status.style.color = '#ef4444';
-        }
-        status.style.display = 'block';
-        clearTimeout(timeoutSimpan);
-        timeoutSimpan = setTimeout(() => { status.style.display = 'none'; }, berhasil ? 2000 : 5000);
-    }
-
+    /**
+     * Ambil data tabel
+     */
     function ambilDataTabel(id) {
         const rows = document.querySelectorAll(`#${id} tbody tr`);
         return Array.from(rows).map(row => {
@@ -847,15 +884,15 @@
             const priceModalEl = row.querySelector('.price-modal');
 
             let satuanVal = '';
-            if (select.value === 'Lainnya') {
+            if (select && select.value === 'Lainnya') {
                 satuanVal = customSatuanEl ? customSatuanEl.value : '';
-            } else {
+            } else if (select) {
                 satuanVal = select.value;
             }
             return {
                 nama: uraianEl ? uraianEl.value : '',
                 qty: qtyEl ? qtyEl.value : '1',
-                satuanType: select.value,
+                satuanType: select ? select.value : '',
                 satuanCustom: customSatuanEl ? customSatuanEl.value : '',
                 satuan: satuanVal,
                 modal: priceModalEl ? getAngka(priceModalEl.value) : 0
@@ -863,6 +900,93 @@
         });
     }
 
+    /**
+     * Populate form dari data
+     * FIXED: Menangani globalPajak dengan benar
+     * FIXED: Menangani migrasi diskon dengan benar
+     */
+    function populateForm(data) {
+        try {
+            if (data.pelanggan) {
+                document.getElementById('cust-nama').value = data.pelanggan.nama || '';
+                document.getElementById('cust-proyek').value = data.pelanggan.proyek || '';
+                document.getElementById('cust-tanggal').value = data.pelanggan.tanggal || '';
+                document.getElementById('cust-lokasi').value = data.pelanggan.lokasi || '';
+                document.getElementById('cust-marketing').value = data.pelanggan.marketing || '';
+                setSelectedMasaBerlaku(data.pelanggan.berlaku || '14');
+            }
+
+            // FIXED: Prioritas data.globalPajak, fallback ke data.pengaturan.usePajak
+            if (data.globalPajak !== undefined) {
+                document.getElementById('check-pajak-global').checked = data.globalPajak;
+            } else if (data.pengaturan && data.pengaturan.usePajak !== undefined) {
+                document.getElementById('check-pajak-global').checked = data.pengaturan.usePajak;
+            } else {
+                document.getElementById('check-pajak-global').checked = true;
+            }
+
+            ['bahan', 'alat', 'jasa'].forEach(suffix => {
+                const pBaru = (data.pengaturan && data.pengaturan[suffix]) ? data.pengaturan[suffix] : null;
+                const pLegacy = (!pBaru && data.pengaturan && data.pengaturan.contingency !== undefined) ? data.pengaturan : null;
+
+                if (pBaru) {
+                    document.getElementById('persen-contingency-' + suffix).value = pBaru.contingency !== undefined ? pBaru.contingency : 3;
+                    document.getElementById('persen-profit-' + suffix).value = pBaru.profit !== undefined ? pBaru.profit : 15;
+                    document.getElementById('tipe-diskon-' + suffix).value = pBaru.tipeDiskon || 'rp';
+                    document.getElementById('input-diskon-' + suffix).value = pBaru.diskon !== undefined ? pBaru.diskon : '0';
+                } else if (pLegacy) {
+                    document.getElementById('persen-contingency-' + suffix).value = pLegacy.contingency !== undefined ? pLegacy.contingency : 3;
+                    document.getElementById('persen-profit-' + suffix).value = pLegacy.profit !== undefined ? pLegacy.profit : 15;
+                    document.getElementById('tipe-diskon-' + suffix).value = pLegacy.tipeDiskon || 'rp';
+
+                    // FIXED: Nominal diskon hanya dipindahkan ke kategori 'jasa'
+                    if (pLegacy.tipeDiskon === 'percent') {
+                        document.getElementById('input-diskon-' + suffix).value = pLegacy.diskon !== undefined ? pLegacy.diskon : '0';
+                    } else {
+                        document.getElementById('input-diskon-' + suffix).value = (suffix === 'jasa' && pLegacy.diskon !== undefined) ? pLegacy.diskon : '0';
+                    }
+                } else {
+                    document.getElementById('persen-contingency-' + suffix).value = 3;
+                    document.getElementById('persen-profit-' + suffix).value = 15;
+                    document.getElementById('tipe-diskon-' + suffix).value = 'rp';
+                    document.getElementById('input-diskon-' + suffix).value = '0';
+                }
+            });
+
+            if (data.tc !== undefined) {
+                document.getElementById('input-tc').value = data.tc;
+            }
+            document.getElementById('input-rekening').value = data.rekening !== undefined
+                ? data.rekening
+                : 'Rekening Bank BCA: 751-0938881 a.n. Christian Adiputra';
+
+            ['tbl-bahan', 'tbl-alat', 'tbl-jasa'].forEach(id => {
+                document.querySelector(`#${id} tbody`).innerHTML = '';
+            });
+
+            muatBarisBanyak('tbl-bahan', 'material', data.bahan);
+            muatBarisBanyak('tbl-alat', 'material', data.alat);
+            muatBarisBanyak('tbl-jasa', 'jasa', data.jasa);
+
+            updateNomorUrut();
+            hitungSemua();
+            updateJudulHalaman();
+            updateTandaTanganInfo();
+            syncPrintTC();
+        } catch (e) {
+            console.error('Error populating form:', e);
+            alert('Terjadi error saat memuat data proyek. Silakan coba lagi.');
+        }
+    }
+
+    // ============================================================
+    // 6. TABLE ROW MANAGEMENT
+    // ============================================================
+
+    /**
+     * Buat elemen baris tabel
+     * FIXED: Menangani custom satuan dengan benar
+     */
     function buatElemenBaris(tipe = 'material', nama = '', qty = '1', satuanType = '', satuanCustom = '', modal = '0') {
         const tr = document.createElement('tr');
         tr.dataset.tipe = tipe;
@@ -875,7 +999,7 @@
 
         let isCustom = !listSatuan.includes(satuanType) && satuanType !== '';
         let currentSelectVal = isCustom ? 'Lainnya' : satuanType;
-        let customInputValue = isCustom ? satuanType : satuanCustom;
+        let customInputValue = isCustom ? satuanType : (satuanCustom || '');
 
         let optionsHTML = '';
         if (tipe === 'jasa') {
@@ -909,15 +1033,15 @@
                 </div>
             </td>
             <td>
-                <textarea class="input-uraian" rows="1" placeholder="Uraian pekerjaan / bahan..." oninput="syncPrintUraian(this); validasiUraian(this); simpanDanHitung()" onblur="validasiUraian(this)">${escapeHtml(nama)}</textarea>
+                <textarea class="input-uraian" rows="1" placeholder="Uraian pekerjaan / bahan..." oninput="syncPrintUraian(this); validasiUraian(this); debouncedSave()" onblur="validasiUraian(this)">${escapeHtml(nama)}</textarea>
                 <div class="print-uraian-view">${escapeHtml(nama)}</div>
             </td>
-            <td><input type="number" class="qty" min="0" value="${escapeHtml(qty)}" oninput="validasiQty(this); simpanDanHitung()"></td>
+            <td><input type="number" class="qty" min="0" value="${escapeHtml(qty)}" oninput="validasiQty(this); debouncedSave()"></td>
             <td>
                 <select onchange="handleSatuanChange(this)" style="display: ${isCustom ? 'none' : 'block'};">
                     ${optionsHTML}
                 </select>
-                <input type="text" class="custom-satuan" placeholder="Ketik satuan..." value="${escapeHtml(customInputValue)}" style="display: ${isCustom ? 'block' : 'none'};" oninput="simpanDanHitung()">
+                <input type="text" class="custom-satuan" placeholder="Ketik satuan..." value="${escapeHtml(customInputValue)}" style="display: ${isCustom ? 'block' : 'none'};" oninput="debouncedSave()">
             </td>
             <td class="modal-col"><input type="text" class="price-modal" value="${escapeHtml(modal)}" oninput="formatInputRupiah(this)"></td>
             <td><input type="text" class="price-jual" readonly></td>
@@ -925,13 +1049,30 @@
             <td>
                 <div class="aksi-group">
                     <button class="btn-duplikat" type="button" onclick="duplikatBaris(this)" title="Duplikat baris ini">Duplikat</button>
-                    <button class="btn-delete" type="button" onclick="this.closest('tr').remove(); updateNomorUrut(); simpanDanHitung();" title="Hapus baris ini">Hapus</button>
+                    <button class="btn-delete" type="button" onclick="hapusBaris(this)" title="Hapus baris ini">Hapus</button>
                 </div>
             </td>`;
 
         return tr;
     }
 
+    /**
+     * Hapus baris dengan konfirmasi
+     */
+    function hapusBaris(btn) {
+        const row = btn.closest('tr');
+        if (row.parentElement.children.length <= 1) {
+            if (!confirm('Ini adalah baris terakhir. Hapus?')) return;
+        }
+        row.remove();
+        updateNomorUrut();
+        debouncedSave();
+    }
+
+    /**
+     * Duplikat baris
+     * FIXED: Menyalin custom satuan dengan benar
+     */
     function duplikatBaris(btn) {
         const row = btn.closest('tr');
         const tipe = row.dataset.tipe || 'material';
@@ -943,18 +1084,23 @@
         const modal = getAngka(row.querySelector('.price-modal').value);
 
         let satuanType;
+        let satuanCustom = '';
         if (select && select.value === 'Lainnya') {
             satuanType = (customInput && customInput.value) ? customInput.value : 'Lainnya';
+            satuanCustom = customInput ? customInput.value : '';
         } else {
             satuanType = select ? select.value : '';
         }
 
-        const barisBaru = buatElemenBaris(tipe, nama, qty, satuanType, '', modal);
+        const barisBaru = buatElemenBaris(tipe, nama, qty, satuanType, satuanCustom, modal);
         row.after(barisBaru);
         updateNomorUrut();
-        simpanDanHitung();
+        debouncedSave();
     }
 
+    /**
+     * Pindah baris
+     */
     function pindahBaris(btn, arah) {
         const row = btn.closest('tr');
         if (arah === 'up') {
@@ -965,16 +1111,23 @@
             if (next) row.parentNode.insertBefore(next, row);
         }
         updateNomorUrut();
-        simpanDanHitung();
+        debouncedSave();
     }
 
+    /**
+     * Tambah baris
+     */
     function tambahBaris(id, tipe = 'material', nama = '', qty = '1', satuanType = '', satuanCustom = '', modal = '0') {
         const tbody = document.querySelector(`#${id} tbody`);
         const row = buatElemenBaris(tipe, nama, qty, satuanType, satuanCustom, modal);
         tbody.appendChild(row);
         updateNomorUrut();
+        debouncedSave();
     }
 
+    /**
+     * Muat banyak baris
+     */
     function muatBarisBanyak(id, tipe, dataArray) {
         const tbody = document.querySelector(`#${id} tbody`);
         const fragment = document.createDocumentFragment();
@@ -989,6 +1142,9 @@
         tbody.appendChild(fragment);
     }
 
+    /**
+     * Update nomor urut
+     */
     function updateNomorUrut() {
         ['tbl-bahan', 'tbl-alat', 'tbl-jasa'].forEach(tableId => {
             const rows = document.querySelectorAll(`#${tableId} tbody tr`);
@@ -1005,6 +1161,9 @@
         });
     }
 
+    /**
+     * Handle change satuan
+     */
     function handleSatuanChange(selectEl) {
         if (selectEl.value === 'Lainnya') {
             const td = selectEl.closest('td');
@@ -1013,16 +1172,109 @@
             customInput.style.display = 'block';
             customInput.value = '';
             customInput.focus();
-            simpanDanHitung();
+            debouncedSave();
         }
     }
 
+    // ============================================================
+    // 7. VALIDATION FUNCTIONS
+    // ============================================================
+
+    /**
+     * Validasi persen
+     */
+    function validasiPersen(el) {
+        if (el.value === '') {
+            el.value = 0;
+            return;
+        }
+        let v = parseFloat(el.value);
+        if (isNaN(v) || v < 0) el.value = 0;
+        if (v > 100) el.value = 100;
+    }
+
+    /**
+     * Validasi qty
+     */
+    function validasiQty(el) {
+        if (el.value === '') {
+            el.value = 0;
+            return;
+        }
+        let v = parseFloat(el.value);
+        if (isNaN(v) || v < 0) el.value = 0;
+    }
+
+    /**
+     * Validasi uraian
+     * FIXED: Menghapus warning saat uraian diisi
+     */
+    function validasiUraian(el) {
+        const row = el.closest('tr');
+        if (!row) return;
+        const qty = parseFloat(row.querySelector('.qty')?.value) || 0;
+        const modal = getAngka(row.querySelector('.price-modal')?.value);
+        const hasContent = el.value.trim() !== '';
+        
+        if (!hasContent && (qty > 0 || modal > 0)) {
+            el.classList.add('input-warning');
+        } else {
+            el.classList.remove('input-warning');
+        }
+    }
+
+    /**
+     * Format input rupiah
+     */
     function formatInputRupiah(el) {
         const digits = el.value.replace(/[^0-9]/g, '');
         el.value = digits === '' ? '' : new Intl.NumberFormat('id-ID').format(parseInt(digits, 10));
-        simpanDanHitung();
+        debouncedSave();
     }
 
+    /**
+     * Handle input diskon
+     * FIXED: Menangani input kosong dengan benar
+     */
+    function handleDiskonInput(input, suffix) {
+        const tipe = document.getElementById('tipe-diskon-' + suffix).value;
+        
+        if (!input.value || input.value === '') {
+            input.value = '0';
+            debouncedSave();
+            return;
+        }
+        
+        if (tipe === 'percent') {
+            input.value = input.value.replace(/[^0-9.]/g, '');
+            let v = parseFloat(input.value);
+            if (!isNaN(v) && v > 100) {
+                input.value = '100';
+            } else if (isNaN(v) || v < 0) {
+                input.value = '0';
+            }
+        } else {
+            const digits = input.value.replace(/[^0-9]/g, '');
+            input.value = digits === '' ? '' : new Intl.NumberFormat('id-ID').format(parseInt(digits, 10));
+        }
+        debouncedSave();
+    }
+
+    /**
+     * Ganti tipe diskon
+     */
+    function gantiTipeDiskon(suffix) {
+        document.getElementById('input-diskon-' + suffix).value = '0';
+        debouncedSave();
+    }
+
+    // ============================================================
+    // 8. CALCULATION FUNCTIONS
+    // ============================================================
+
+    /**
+     * Hitung subtotal tabel
+     */
     function hitungSubtotalTabel(tableId, totalMarkupPersen) {
         let totalModal = 0;
         let totalJual = 0;
@@ -1049,6 +1301,9 @@
         return { totalModal, totalJual };
     }
 
+    /**
+     * Hitung grup tabel
+     */
     function hitungGrupTabel(suffix, tableId) {
         const pContingency = Math.max(0, parseFloat(document.getElementById('persen-contingency-' + suffix).value) || 0);
         const pProfit = Math.max(0, parseFloat(document.getElementById('persen-profit-' + suffix).value) || 0);
@@ -1070,161 +1325,166 @@
         return { totalModal, totalJual, diskonRupiah };
     }
 
+    /**
+     * Hitung semua
+     */
     function hitungSemua() {
-        const gBahan = hitungGrupTabel('bahan', 'tbl-bahan');
-        const gAlat = hitungGrupTabel('alat', 'tbl-alat');
-        const gJasa = hitungGrupTabel('jasa', 'tbl-jasa');
+        try {
+            const gBahan = hitungGrupTabel('bahan', 'tbl-bahan');
+            const gAlat = hitungGrupTabel('alat', 'tbl-alat');
+            const gJasa = hitungGrupTabel('jasa', 'tbl-jasa');
 
-        document.getElementById('foot-total-bahan').innerText = formatRupiah(gBahan.totalJual);
-        document.getElementById('foot-total-alat').innerText = formatRupiah(gAlat.totalJual);
-        document.getElementById('foot-total-jasa').innerText = formatRupiah(gJasa.totalJual);
+            document.getElementById('foot-total-bahan').innerText = formatRupiah(gBahan.totalJual);
+            document.getElementById('foot-total-alat').innerText = formatRupiah(gAlat.totalJual);
+            document.getElementById('foot-total-jasa').innerText = formatRupiah(gJasa.totalJual);
 
-        const totalJualBahanAlat = gBahan.totalJual + gAlat.totalJual;
-        document.getElementById('rek-subtotal-bahan-alat').innerText = formatRupiah(totalJualBahanAlat);
-        document.getElementById('rek-subtotal-jasa').innerText = formatRupiah(gJasa.totalJual);
+            const totalJualBahanAlat = gBahan.totalJual + gAlat.totalJual;
+            document.getElementById('rek-subtotal-bahan-alat').innerText = formatRupiah(totalJualBahanAlat);
+            document.getElementById('rek-subtotal-jasa').innerText = formatRupiah(gJasa.totalJual);
 
-        const totalModalKeseluruhan = gBahan.totalModal + gAlat.totalModal + gJasa.totalModal;
-        const totalPenawaranKeseluruhan = totalJualBahanAlat + gJasa.totalJual;
+            const totalModalKeseluruhan = gBahan.totalModal + gAlat.totalModal + gJasa.totalModal;
+            const totalPenawaranKeseluruhan = totalJualBahanAlat + gJasa.totalJual;
 
-        const totalDiskonGabungan = gBahan.diskonRupiah + gAlat.diskonRupiah + gJasa.diskonRupiah;
-        const subtotalSetelahDiskon = Math.max(0, totalPenawaranKeseluruhan - totalDiskonGabungan);
+            const totalDiskonGabungan = gBahan.diskonRupiah + gAlat.diskonRupiah + gJasa.diskonRupiah;
+            const subtotalSetelahDiskon = Math.max(0, totalPenawaranKeseluruhan - totalDiskonGabungan);
 
-        const usePajakGlobal = document.getElementById('check-pajak-global').checked;
-        const totalPajakGlobal = usePajakGlobal ? subtotalSetelahDiskon * 0.11 : 0;
+            const usePajakGlobal = document.getElementById('check-pajak-global').checked;
+            const totalPajakGlobal = usePajakGlobal ? subtotalSetelahDiskon * 0.11 : 0;
 
-        const grandTotal = subtotalSetelahDiskon + totalPajakGlobal;
-        const totalKeuntunganBersih = totalPenawaranKeseluruhan - totalModalKeseluruhan - totalDiskonGabungan;
+            const grandTotal = subtotalSetelahDiskon + totalPajakGlobal;
+            const totalKeuntunganBersih = totalPenawaranKeseluruhan - totalModalKeseluruhan - totalDiskonGabungan;
 
-        document.getElementById('rek-modal').innerText = formatRupiah(totalModalKeseluruhan);
-        document.getElementById('rek-markup').innerText = formatRupiah(totalKeuntunganBersih);
-        document.getElementById('print-subtotal').innerText = formatRupiah(totalPenawaranKeseluruhan);
+            document.getElementById('rek-modal').innerText = formatRupiah(totalModalKeseluruhan);
+            document.getElementById('rek-markup').innerText = formatRupiah(totalKeuntunganBersih);
+            document.getElementById('print-subtotal').innerText = formatRupiah(totalPenawaranKeseluruhan);
 
-        const rowDiskon = document.getElementById('row-diskon');
-        if (totalDiskonGabungan > 0) {
-            rowDiskon.style.display = 'flex';
-            document.getElementById('rek-diskon').innerText = "- " + formatRupiah(totalDiskonGabungan);
-        } else {
-            rowDiskon.style.display = 'none';
+            const rowDiskon = document.getElementById('row-diskon');
+            if (totalDiskonGabungan > 0) {
+                rowDiskon.style.display = 'flex';
+                document.getElementById('rek-diskon').innerText = "- " + formatRupiah(totalDiskonGabungan);
+            } else {
+                rowDiskon.style.display = 'none';
+            }
+
+            const rowPajak = document.getElementById('row-pajak');
+            if (usePajakGlobal) {
+                rowPajak.style.display = 'flex';
+                document.getElementById('rek-pajak').innerText = formatRupiah(totalPajakGlobal);
+            } else {
+                rowPajak.style.display = 'none';
+            }
+
+            document.getElementById('rek-penawaran').innerText = formatRupiah(grandTotal);
+        } catch (e) {
+            console.error('Error calculating:', e);
         }
-
-        const rowPajak = document.getElementById('row-pajak');
-        if (usePajakGlobal) {
-            rowPajak.style.display = 'flex';
-            document.getElementById('rek-pajak').innerText = formatRupiah(totalPajakGlobal);
-        } else {
-            rowPajak.style.display = 'none';
-        }
-
-        document.getElementById('rek-penawaran').innerText = formatRupiah(grandTotal);
     }
 
-    function populateForm(data) {
-        if (data.pelanggan) {
-            document.getElementById('cust-nama').value = data.pelanggan.nama || '';
-            document.getElementById('cust-proyek').value = data.pelanggan.proyek || '';
-            document.getElementById('cust-tanggal').value = data.pelanggan.tanggal || '';
-            document.getElementById('cust-lokasi').value = data.pelanggan.lokasi || '';
-            document.getElementById('cust-marketing').value = data.pelanggan.marketing || '';
-            setSelectedMasaBerlaku(data.pelanggan.berlaku || '14');
-        }
+    // ============================================================
+    // 9. AUTO-SAVE WITH DEBOUNCE (FIXED)
+    // ============================================================
 
-        // FIX BUG PAJAK: skema lama (v3) menyimpan status PPN di data.pengaturan.usePajak,
-        // bukan data.globalPajak. Tanpa fallback ini, proyek lama akan selalu kembali ke
-        // PPN aktif meski dulu sengaja dimatikan.
-        if (data.globalPajak !== undefined) {
-            document.getElementById('check-pajak-global').checked = data.globalPajak;
-        } else if (data.pengaturan && data.pengaturan.usePajak !== undefined) {
-            document.getElementById('check-pajak-global').checked = data.pengaturan.usePajak;
+    let timeoutStatus;
+    let isSaving = false;
+
+    /**
+     * Tampilkan status simpan
+     */
+    function tampilkanStatusSimpan(berhasil) {
+        const status = document.getElementById('status-simpan');
+        if (berhasil) {
+            status.textContent = 'Tersimpan otomatis';
+            status.style.color = '#10b981';
         } else {
-            document.getElementById('check-pajak-global').checked = true;
+            status.textContent = 'Gagal menyimpan! Penyimpanan lokal penuh atau diblokir browser.';
+            status.style.color = '#ef4444';
         }
+        status.style.display = 'block';
+        clearTimeout(timeoutStatus);
+        timeoutStatus = setTimeout(() => { 
+            status.style.display = 'none'; 
+        }, berhasil ? 2000 : 5000);
+    }
 
-        ['bahan', 'alat', 'jasa'].forEach(suffix => {
-            const pBaru = (data.pengaturan && data.pengaturan[suffix]) ? data.pengaturan[suffix] : null;
-            const pLegacy = (!pBaru && data.pengaturan && data.pengaturan.contingency !== undefined) ? data.pengaturan : null;
+    /**
+     * Simpan ke storage dengan error handling
+     * FIXED: Menyimpan globalPajak dengan benar
+     */
+    function simpanKeStorage() {
+        if (isSaving) return;
+        isSaving = true;
+        
+        try {
+            const data = ambilFormSnapshot();
+            const list = getProjects();
+            let activeId = getActiveId();
+            let project = list.find(p => p.id === activeId);
 
-            if (pBaru) {
-                // Data sudah dalam skema baru (per kategori) - langsung pakai.
-                document.getElementById('persen-contingency-' + suffix).value = pBaru.contingency !== undefined ? pBaru.contingency : 3;
-                document.getElementById('persen-profit-' + suffix).value = pBaru.profit !== undefined ? pBaru.profit : 15;
-                document.getElementById('tipe-diskon-' + suffix).value = pBaru.tipeDiskon || 'rp';
-                document.getElementById('input-diskon-' + suffix).value = pBaru.diskon !== undefined ? pBaru.diskon : '0';
-            } else if (pLegacy) {
-                // FIX BUG DISKON: migrasi dari skema lama (v3) yang cuma punya SATU pengaturan
-                // global untuk semua kategori (A+B+C jadi satu).
-                document.getElementById('persen-contingency-' + suffix).value = pLegacy.contingency !== undefined ? pLegacy.contingency : 3;
-                document.getElementById('persen-profit-' + suffix).value = pLegacy.profit !== undefined ? pLegacy.profit : 15;
-                document.getElementById('tipe-diskon-' + suffix).value = pLegacy.tipeDiskon || 'rp';
-
-                if (pLegacy.tipeDiskon === 'percent') {
-                    // Aman direplikasi ke tiap kategori: X% dari A + X% dari B + X% dari C = X% dari total,
-                    // jadi hasil akhirnya tetap sama seperti sebelum migrasi.
-                    document.getElementById('input-diskon-' + suffix).value = pLegacy.diskon !== undefined ? pLegacy.diskon : '0';
-                } else {
-                    // Nominal Rp TIDAK boleh direplikasi ke 3 kategori sekaligus (akan terhitung 3x lipat).
-                    // Seluruh nominal diskon lama dipindahkan hanya ke kategori 'jasa' saja,
-                    // supaya total diskon keseluruhan tetap identik dengan sebelum migrasi.
-                    document.getElementById('input-diskon-' + suffix).value = (suffix === 'jasa' && pLegacy.diskon !== undefined) ? pLegacy.diskon : '0';
-                }
+            if (!project) {
+                const namaAwal = 'Proyek ' + new Date().toLocaleDateString('id-ID') + ' (' + new Date().toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'}) + ')';
+                project = { id: generateId(), nama: namaAwal, updatedAt: Date.now(), data: data };
+                list.push(project);
+                setActiveId(project.id);
             } else {
-                document.getElementById('persen-contingency-' + suffix).value = 3;
-                document.getElementById('persen-profit-' + suffix).value = 15;
-                document.getElementById('tipe-diskon-' + suffix).value = 'rp';
-                document.getElementById('input-diskon-' + suffix).value = '0';
+                project.data = data;
+                project.updatedAt = Date.now();
             }
-        });
 
-        if (data.tc !== undefined) {
-            document.getElementById('input-tc').value = data.tc;
+            const berhasil = saveProjects(list);
+            renderDaftarProyek();
+            tampilkanStatusSimpan(berhasil);
+        } catch (e) {
+            console.error('Error saving:', e);
+            tampilkanStatusSimpan(false);
+        } finally {
+            isSaving = false;
         }
-        document.getElementById('input-rekening').value = data.rekening !== undefined
-            ? data.rekening
-            : 'Rekening Bank BCA: 751-0938881 a.n. Christian Adiputra';
+    }
 
-        ['tbl-bahan', 'tbl-alat', 'tbl-jasa'].forEach(id => {
-            document.querySelector(`#${id} tbody`).innerHTML = '';
-        });
-
-        muatBarisBanyak('tbl-bahan', 'material', data.bahan);
-        muatBarisBanyak('tbl-alat', 'material', data.alat);
-        muatBarisBanyak('tbl-jasa', 'jasa', data.jasa);
-
-        updateNomorUrut();
+    /**
+     * Debounced save function
+     */
+    const debouncedSave = debounce(() => {
         hitungSemua();
         updateJudulHalaman();
         updateTandaTanganInfo();
         syncPrintTC();
+        simpanKeStorage();
+    }, 300);
+
+    /**
+     * Save dan hitung (untuk event yang membutuhkan immediate update)
+     */
+    function simpanDanHitung() {
+        debouncedSave();
     }
 
-    window.onload = () => {
-        migrasiDataLama();
-        renderDaftarProyek();
-        updateMasaBerlakuTeks();
+    // Auto-save sebelum page unload
+    window.addEventListener('beforeunload', () => {
+        simpanKeStorage();
+    });
 
-        const activeId = getActiveId();
-        const project = getProjects().find(p => p.id === activeId);
+    // ============================================================
+    // 10. RESET DATA (FIXED)
+    // ============================================================
 
-        if (project) {
-            populateForm(project.data);
-        } else {
-            muatBarisBanyak('tbl-bahan', 'material', []);
-            muatBarisBanyak('tbl-alat', 'material', []);
-            muatBarisBanyak('tbl-jasa', 'jasa', []);
-            document.getElementById('cust-tanggal').valueAsDate = new Date();
-            setSelectedMasaBerlaku('14');
-            updateNomorUrut();
-            hitungSemua();
-            updateJudulHalaman();
-            updateTandaTanganInfo();
-            syncPrintTC();
-        }
-    };
-
+    /**
+     * Reset data - buat RAB baru
+     * FIXED: Menghapus proyek aktif dari localStorage
+     */
     function resetData() {
         if (!confirm("Buat proyek RAB baru? Form akan dikosongkan.")) return;
 
-        setActiveId(null);
+        // Hapus proyek aktif dari storage
+        const activeId = getActiveId();
+        if (activeId) {
+            const list = getProjects();
+            const remaining = list.filter(p => p.id !== activeId);
+            saveProjects(remaining);
+            setActiveId(null);
+        }
 
+        // Reset form
         document.getElementById('cust-nama').value = '';
         document.getElementById('cust-proyek').value = '';
         document.getElementById('cust-tanggal').valueAsDate = new Date();
@@ -1260,7 +1520,43 @@
         updateJudulHalaman();
         updateTandaTanganInfo();
         syncPrintTC();
+        
+        // Simpan state baru
+        simpanKeStorage();
     }
+
+    // ============================================================
+    // 11. INITIALIZATION
+    // ============================================================
+
+    window.onload = () => {
+        try {
+            migrasiDataLama();
+            renderDaftarProyek();
+            updateMasaBerlakuTeks();
+
+            const activeId = getActiveId();
+            const project = getProjects().find(p => p.id === activeId);
+
+            if (project) {
+                populateForm(project.data);
+            } else {
+                muatBarisBanyak('tbl-bahan', 'material', []);
+                muatBarisBanyak('tbl-alat', 'material', []);
+                muatBarisBanyak('tbl-jasa', 'jasa', []);
+                document.getElementById('cust-tanggal').valueAsDate = new Date();
+                setSelectedMasaBerlaku('14');
+                updateNomorUrut();
+                hitungSemua();
+                updateJudulHalaman();
+                updateTandaTanganInfo();
+                syncPrintTC();
+            }
+        } catch (e) {
+            console.error('Error initializing app:', e);
+            alert('Terjadi error saat memuat aplikasi. Silakan refresh halaman.');
+        }
+    };
 </script>
 </body>
 </html>
