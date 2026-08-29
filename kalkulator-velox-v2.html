@@ -478,28 +478,18 @@
     // ============================================================
     // 1. UTILITY FUNCTIONS
     // ============================================================
-    
-    /**
-     * Format angka ke format Rupiah
-     */
-    const formatRupiah = (angka) => new Intl.NumberFormat('id-ID', { 
-        style: 'currency', 
-        currency: 'IDR', 
-        maximumFractionDigits: 0 
+
+    const formatRupiah = (angka) => new Intl.NumberFormat('id-ID', {
+        style: 'currency',
+        currency: 'IDR',
+        maximumFractionDigits: 0
     }).format(angka);
 
-    /**
-     * Mendapatkan nilai angka dari input string (menghapus karakter non-digit)
-     * FIXED: Menangani undefined/null dengan aman
-     */
     function getAngka(inputVal) {
         if (inputVal === undefined || inputVal === null || inputVal === '') return 0;
         return parseFloat(String(inputVal).replace(/[^0-9]/g, '')) || 0;
     }
 
-    /**
-     * Escape HTML untuk keamanan
-     */
     function escapeHtml(str) {
         if (!str) return '';
         return String(str)
@@ -511,17 +501,8 @@
     }
 
     /**
-     * Validasi angka minimal 0
-     */
-    function validateNumber(value, min = 0, max = Infinity) {
-        const num = parseFloat(value);
-        if (isNaN(num) || num < min) return min;
-        if (num > max) return max;
-        return num;
-    }
-
-    /**
-     * Debounce function untuk optimasi performa
+     * Debounce function - hanya dipakai untuk PENYIMPANAN ke localStorage,
+     * BUKAN untuk perhitungan angka di layar (lihat bagian 9).
      */
     function debounce(func, wait) {
         let timeout;
@@ -539,9 +520,6 @@
     // 2. UI SYNC FUNCTIONS
     // ============================================================
 
-    /**
-     * Sinkronisasi textarea uraian dengan view print
-     */
     function syncPrintUraian(textareaEl) {
         const row = textareaEl.closest('tr');
         if (!row) return;
@@ -551,9 +529,6 @@
         }
     }
 
-    /**
-     * Sinkronisasi TC dengan view print
-     */
     function syncPrintTC() {
         const tcEl = document.getElementById('input-tc');
         const printTcEl = document.getElementById('print-tc-content');
@@ -562,9 +537,6 @@
         }
     }
 
-    /**
-     * Update informasi tanda tangan
-     */
     function updateTandaTanganInfo() {
         const namaPelanggan = document.getElementById('cust-nama').value.trim();
         const sigNamaEl = document.getElementById('sig-cust-nama');
@@ -592,9 +564,6 @@
         }
     }
 
-    /**
-     * Update judul halaman
-     */
     function updateJudulHalaman() {
         const namaProyek = document.getElementById('cust-proyek').value.trim();
         const namaPelanggan = document.getElementById('cust-nama').value.trim();
@@ -607,17 +576,11 @@
         document.title = judul;
     }
 
-    /**
-     * Get selected masa berlaku
-     */
     function getSelectedMasaBerlaku() {
         const checkedRadio = document.querySelector('input[name="cust-berlaku"]:checked');
         return checkedRadio ? checkedRadio.value : '14';
     }
 
-    /**
-     * Set selected masa berlaku
-     */
     function setSelectedMasaBerlaku(val) {
         const targetVal = (val === '30' || val == 30) ? '30' : '14';
         const radio = document.querySelector(`input[name="cust-berlaku"][value="${targetVal}"]`);
@@ -625,9 +588,6 @@
         updateMasaBerlakuTeks();
     }
 
-    /**
-     * Update text masa berlaku
-     */
     function updateMasaBerlakuTeks() {
         const val = getSelectedMasaBerlaku();
         const printEl = document.getElementById('print-cust-berlaku');
@@ -643,16 +603,10 @@
     const KEY_LEGACY = 'dataRABVeloxProjects_v3';
     const KEY_LEGACY_ACTIVE = 'dataRABVeloxActiveId_v3';
 
-    /**
-     * Generate unique ID
-     */
     function generateId() {
         return 'p_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 8);
     }
 
-    /**
-     * Get projects from localStorage dengan error handling
-     */
     function getProjects() {
         try {
             return JSON.parse(localStorage.getItem(KEY_PROJECTS)) || [];
@@ -662,13 +616,9 @@
         }
     }
 
-    /**
-     * Save projects to localStorage dengan error handling
-     */
     function saveProjects(list) {
         try {
             const data = JSON.stringify(list);
-            // Warning jika data terlalu besar
             if (data.length > 5 * 1024 * 1024) {
                 console.warn('Data proyek besar (>5MB), pertimbangkan kompresi');
             }
@@ -681,9 +631,6 @@
         }
     }
 
-    /**
-     * Get active project ID
-     */
     function getActiveId() {
         try {
             return localStorage.getItem(KEY_ACTIVE) || null;
@@ -692,9 +639,6 @@
         }
     }
 
-    /**
-     * Set active project ID
-     */
     function setActiveId(id) {
         try {
             if (id) localStorage.setItem(KEY_ACTIVE, id);
@@ -704,9 +648,6 @@
         }
     }
 
-    /**
-     * Migrasi data dari versi lama
-     */
     function migrasiDataLama() {
         try {
             if (localStorage.getItem(KEY_PROJECTS)) return;
@@ -724,9 +665,6 @@
     // 4. PROJECT MANAGEMENT
     // ============================================================
 
-    /**
-     * Render daftar proyek di dropdown
-     */
     function renderDaftarProyek() {
         const list = getProjects().slice().sort((a, b) => b.updatedAt - a.updatedAt);
         const sel = document.getElementById('project-selector');
@@ -750,9 +688,6 @@
         }
     }
 
-    /**
-     * Muat proyek terpilih
-     */
     function muatProyekTerpilih() {
         const id = document.getElementById('project-selector').value;
         if (!id) return;
@@ -764,9 +699,6 @@
         renderDaftarProyek();
     }
 
-    /**
-     * Simpan proyek baru
-     */
     function simpanProyekBaru() {
         const nama = prompt('Masukkan nama khusus untuk proyek baru ini:', 'Draft Proyek ' + new Date().toLocaleDateString('id-ID'));
         if (nama === null) return;
@@ -785,9 +717,6 @@
         tampilkanStatusSimpan(true);
     }
 
-    /**
-     * Ganti nama proyek terpilih
-     */
     function gantiNamaProyekTerpilih() {
         const id = document.getElementById('project-selector').value;
         if (!id) return;
@@ -809,9 +738,6 @@
         renderDaftarProyek();
     }
 
-    /**
-     * Hapus proyek terpilih
-     */
     function hapusProyekTerpilih() {
         const id = document.getElementById('project-selector').value;
         if (!id) return;
@@ -831,9 +757,6 @@
     // 5. FORM DATA MANAGEMENT
     // ============================================================
 
-    /**
-     * Ambil pengaturan tabel per kategori
-     */
     function ambilPengaturanTabel(suffix) {
         return {
             contingency: document.getElementById('persen-contingency-' + suffix).value,
@@ -843,10 +766,6 @@
         };
     }
 
-    /**
-     * Ambil snapshot form lengkap
-     * FIXED: Menyimpan globalPajak dengan benar
-     */
     function ambilFormSnapshot() {
         return {
             pelanggan: {
@@ -871,9 +790,6 @@
         };
     }
 
-    /**
-     * Ambil data tabel
-     */
     function ambilDataTabel(id) {
         const rows = document.querySelectorAll(`#${id} tbody tr`);
         return Array.from(rows).map(row => {
@@ -900,11 +816,6 @@
         });
     }
 
-    /**
-     * Populate form dari data
-     * FIXED: Menangani globalPajak dengan benar
-     * FIXED: Menangani migrasi diskon dengan benar
-     */
     function populateForm(data) {
         try {
             if (data.pelanggan) {
@@ -916,7 +827,6 @@
                 setSelectedMasaBerlaku(data.pelanggan.berlaku || '14');
             }
 
-            // FIXED: Prioritas data.globalPajak, fallback ke data.pengaturan.usePajak
             if (data.globalPajak !== undefined) {
                 document.getElementById('check-pajak-global').checked = data.globalPajak;
             } else if (data.pengaturan && data.pengaturan.usePajak !== undefined) {
@@ -939,7 +849,6 @@
                     document.getElementById('persen-profit-' + suffix).value = pLegacy.profit !== undefined ? pLegacy.profit : 15;
                     document.getElementById('tipe-diskon-' + suffix).value = pLegacy.tipeDiskon || 'rp';
 
-                    // FIXED: Nominal diskon hanya dipindahkan ke kategori 'jasa'
                     if (pLegacy.tipeDiskon === 'percent') {
                         document.getElementById('input-diskon-' + suffix).value = pLegacy.diskon !== undefined ? pLegacy.diskon : '0';
                     } else {
@@ -983,10 +892,6 @@
     // 6. TABLE ROW MANAGEMENT
     // ============================================================
 
-    /**
-     * Buat elemen baris tabel
-     * FIXED: Menangani custom satuan dengan benar
-     */
     function buatElemenBaris(tipe = 'material', nama = '', qty = '1', satuanType = '', satuanCustom = '', modal = '0') {
         const tr = document.createElement('tr');
         tr.dataset.tipe = tipe;
@@ -1056,9 +961,6 @@
         return tr;
     }
 
-    /**
-     * Hapus baris dengan konfirmasi
-     */
     function hapusBaris(btn) {
         const row = btn.closest('tr');
         if (row.parentElement.children.length <= 1) {
@@ -1069,10 +971,6 @@
         debouncedSave();
     }
 
-    /**
-     * Duplikat baris
-     * FIXED: Menyalin custom satuan dengan benar
-     */
     function duplikatBaris(btn) {
         const row = btn.closest('tr');
         const tipe = row.dataset.tipe || 'material';
@@ -1098,9 +996,6 @@
         debouncedSave();
     }
 
-    /**
-     * Pindah baris
-     */
     function pindahBaris(btn, arah) {
         const row = btn.closest('tr');
         if (arah === 'up') {
@@ -1115,19 +1010,18 @@
     }
 
     /**
-     * Tambah baris
+     * Tambah baris.
+     * FIX: baris kosong baru TIDAK langsung memicu penyimpanan proyek ke localStorage
+     * (baris masih kosong, belum ada data berarti untuk disimpan). Penyimpanan akan
+     * terjadi secara wajar begitu user mulai mengisi salah satu field di baris ini.
      */
     function tambahBaris(id, tipe = 'material', nama = '', qty = '1', satuanType = '', satuanCustom = '', modal = '0') {
         const tbody = document.querySelector(`#${id} tbody`);
         const row = buatElemenBaris(tipe, nama, qty, satuanType, satuanCustom, modal);
         tbody.appendChild(row);
         updateNomorUrut();
-        debouncedSave();
     }
 
-    /**
-     * Muat banyak baris
-     */
     function muatBarisBanyak(id, tipe, dataArray) {
         const tbody = document.querySelector(`#${id} tbody`);
         const fragment = document.createDocumentFragment();
@@ -1142,9 +1036,6 @@
         tbody.appendChild(fragment);
     }
 
-    /**
-     * Update nomor urut
-     */
     function updateNomorUrut() {
         ['tbl-bahan', 'tbl-alat', 'tbl-jasa'].forEach(tableId => {
             const rows = document.querySelectorAll(`#${tableId} tbody tr`);
@@ -1161,9 +1052,6 @@
         });
     }
 
-    /**
-     * Handle change satuan
-     */
     function handleSatuanChange(selectEl) {
         if (selectEl.value === 'Lainnya') {
             const td = selectEl.closest('td');
@@ -1181,41 +1069,33 @@
     // ============================================================
 
     /**
-     * Validasi persen
+     * Validasi persen.
+     * FIX: batas maksimal 100% dihapus - field ini juga dipakai untuk
+     * "Biaya Tak Terduga (%)" dan "Target Keuntungan (%)" yang secara bisnis
+     * wajar bisa melebihi 100% (mis. item kecil dengan margin tinggi).
+     * Hanya nilai negatif/tidak valid yang tetap dijaga ke 0.
      */
     function validasiPersen(el) {
         if (el.value === '') {
-            el.value = 0;
             return;
         }
         let v = parseFloat(el.value);
         if (isNaN(v) || v < 0) el.value = 0;
-        if (v > 100) el.value = 100;
     }
 
-    /**
-     * Validasi qty
-     */
     function validasiQty(el) {
-        if (el.value === '') {
-            el.value = 0;
-            return;
-        }
+        if (el.value === '') return;
         let v = parseFloat(el.value);
         if (isNaN(v) || v < 0) el.value = 0;
     }
 
-    /**
-     * Validasi uraian
-     * FIXED: Menghapus warning saat uraian diisi
-     */
     function validasiUraian(el) {
         const row = el.closest('tr');
         if (!row) return;
         const qty = parseFloat(row.querySelector('.qty')?.value) || 0;
         const modal = getAngka(row.querySelector('.price-modal')?.value);
         const hasContent = el.value.trim() !== '';
-        
+
         if (!hasContent && (qty > 0 || modal > 0)) {
             el.classList.add('input-warning');
         } else {
@@ -1223,28 +1103,21 @@
         }
     }
 
-    /**
-     * Format input rupiah
-     */
     function formatInputRupiah(el) {
         const digits = el.value.replace(/[^0-9]/g, '');
         el.value = digits === '' ? '' : new Intl.NumberFormat('id-ID').format(parseInt(digits, 10));
         debouncedSave();
     }
 
-    /**
-     * Handle input diskon
-     * FIXED: Menangani input kosong dengan benar
-     */
     function handleDiskonInput(input, suffix) {
         const tipe = document.getElementById('tipe-diskon-' + suffix).value;
-        
+
         if (!input.value || input.value === '') {
             input.value = '0';
             debouncedSave();
             return;
         }
-        
+
         if (tipe === 'percent') {
             input.value = input.value.replace(/[^0-9.]/g, '');
             let v = parseFloat(input.value);
@@ -1260,9 +1133,6 @@
         debouncedSave();
     }
 
-    /**
-     * Ganti tipe diskon
-     */
     function gantiTipeDiskon(suffix) {
         document.getElementById('input-diskon-' + suffix).value = '0';
         debouncedSave();
@@ -1272,9 +1142,6 @@
     // 8. CALCULATION FUNCTIONS
     // ============================================================
 
-    /**
-     * Hitung subtotal tabel
-     */
     function hitungSubtotalTabel(tableId, totalMarkupPersen) {
         let totalModal = 0;
         let totalJual = 0;
@@ -1301,9 +1168,6 @@
         return { totalModal, totalJual };
     }
 
-    /**
-     * Hitung grup tabel
-     */
     function hitungGrupTabel(suffix, tableId) {
         const pContingency = Math.max(0, parseFloat(document.getElementById('persen-contingency-' + suffix).value) || 0);
         const pProfit = Math.max(0, parseFloat(document.getElementById('persen-profit-' + suffix).value) || 0);
@@ -1325,9 +1189,6 @@
         return { totalModal, totalJual, diskonRupiah };
     }
 
-    /**
-     * Hitung semua
-     */
     function hitungSemua() {
         try {
             const gBahan = hitungGrupTabel('bahan', 'tbl-bahan');
@@ -1381,15 +1242,18 @@
     }
 
     // ============================================================
-    // 9. AUTO-SAVE WITH DEBOUNCE (FIXED)
+    // 9. UI UPDATE (INSTAN) + AUTO-SAVE KE STORAGE (DI-DEBOUNCE)
+    // ============================================================
+    //
+    // FIX: sebelumnya hitungSemua() dkk ikut tertunda 300ms bersama proses
+    // simpan ke localStorage, sehingga angka subtotal/total terasa lag saat
+    // mengetik. Sekarang dipisah: perhitungan & tampilan berjalan INSTAN di
+    // setiap ketikan, dan HANYA penulisan ke localStorage yang di-debounce.
     // ============================================================
 
     let timeoutStatus;
     let isSaving = false;
 
-    /**
-     * Tampilkan status simpan
-     */
     function tampilkanStatusSimpan(berhasil) {
         const status = document.getElementById('status-simpan');
         if (berhasil) {
@@ -1401,19 +1265,15 @@
         }
         status.style.display = 'block';
         clearTimeout(timeoutStatus);
-        timeoutStatus = setTimeout(() => { 
-            status.style.display = 'none'; 
+        timeoutStatus = setTimeout(() => {
+            status.style.display = 'none';
         }, berhasil ? 2000 : 5000);
     }
 
-    /**
-     * Simpan ke storage dengan error handling
-     * FIXED: Menyimpan globalPajak dengan benar
-     */
     function simpanKeStorage() {
         if (isSaving) return;
         isSaving = true;
-        
+
         try {
             const data = ambilFormSnapshot();
             const list = getProjects();
@@ -1442,49 +1302,48 @@
     }
 
     /**
-     * Debounced save function
+     * Penyimpanan ke localStorage di-debounce (jeda 400ms setelah berhenti mengetik)
+     * agar tidak menulis storage di setiap huruf yang diketik.
      */
-    const debouncedSave = debounce(() => {
+    const scheduleStorageSave = debounce(simpanKeStorage, 400);
+
+    /**
+     * Dipanggil dari setiap oninput/onchange di form.
+     * Perhitungan & tampilan (hitungSemua dkk) berjalan INSTAN,
+     * hanya penulisan ke localStorage yang ditunda (debounced).
+     */
+    function debouncedSave() {
         hitungSemua();
         updateJudulHalaman();
         updateTandaTanganInfo();
         syncPrintTC();
-        simpanKeStorage();
-    }, 300);
-
-    /**
-     * Save dan hitung (untuk event yang membutuhkan immediate update)
-     */
-    function simpanDanHitung() {
-        debouncedSave();
+        scheduleStorageSave();
     }
 
-    // Auto-save sebelum page unload
+    // Pengaman: kalau tab ditutup/refresh persis saat debounce belum sempat jalan,
+    // paksa simpan segera supaya tidak ada perubahan terakhir yang hilang.
     window.addEventListener('beforeunload', () => {
         simpanKeStorage();
     });
 
     // ============================================================
-    // 10. RESET DATA (FIXED)
+    // 10. RESET DATA
     // ============================================================
 
     /**
-     * Reset data - buat RAB baru
-     * FIXED: Menghapus proyek aktif dari localStorage
+     * Reset data - buat RAB baru.
+     * FIX: sebelumnya fungsi ini MENGHAPUS proyek yang sedang aktif secara
+     * permanen dari localStorage, padahal dialog konfirmasi hanya bilang
+     * "form akan dikosongkan" - tidak ada peringatan soal penghapusan data.
+     * Sekarang perilaku dikembalikan seperti semula: proyek yang sedang dibuka
+     * TETAP TERSIMPAN di daftar "Proyek Tersimpan" dan bisa dimuat lagi kapan
+     * saja; tombol ini hanya mengosongkan form dan melepas status "aktif".
      */
     function resetData() {
         if (!confirm("Buat proyek RAB baru? Form akan dikosongkan.")) return;
 
-        // Hapus proyek aktif dari storage
-        const activeId = getActiveId();
-        if (activeId) {
-            const list = getProjects();
-            const remaining = list.filter(p => p.id !== activeId);
-            saveProjects(remaining);
-            setActiveId(null);
-        }
+        setActiveId(null);
 
-        // Reset form
         document.getElementById('cust-nama').value = '';
         document.getElementById('cust-proyek').value = '';
         document.getElementById('cust-tanggal').valueAsDate = new Date();
@@ -1520,9 +1379,6 @@
         updateJudulHalaman();
         updateTandaTanganInfo();
         syncPrintTC();
-        
-        // Simpan state baru
-        simpanKeStorage();
     }
 
     // ============================================================
