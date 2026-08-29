@@ -500,6 +500,10 @@
             .replace(/'/g, '&#039;');
     }
 
+    /**
+     * Debounce function - hanya dipakai untuk PENYIMPANAN ke localStorage,
+     * BUKAN untuk perhitungan angka di layar (lihat bagian 9).
+     */
     function debounce(func, wait) {
         let timeout;
         return function executedFunction(...args) {
@@ -591,7 +595,7 @@
     }
 
     // ============================================================
-    // 3. STORAGE MANAGEMENT
+    // 3. STORAGE MANAGEMENT (dengan error handling)
     // ============================================================
 
     const KEY_PROJECTS = 'dataRABVeloxProjects_v4';
@@ -878,12 +882,6 @@
             updateJudulHalaman();
             updateTandaTanganInfo();
             syncPrintTC();
-            
-            // 🔥 PERBAIKAN BUG #1: Validasi semua uraian setelah data dimuat
-            setTimeout(() => {
-                validasiSemuaUraian();
-            }, 100);
-            
         } catch (e) {
             console.error('Error populating form:', e);
             alert('Terjadi error saat memuat data proyek. Silakan coba lagi.');
@@ -1011,6 +1009,12 @@
         debouncedSave();
     }
 
+    /**
+     * Tambah baris.
+     * FIX: baris kosong baru TIDAK langsung memicu penyimpanan proyek ke localStorage
+     * (baris masih kosong, belum ada data berarti untuk disimpan). Penyimpanan akan
+     * terjadi secara wajar begitu user mulai mengisi salah satu field di baris ini.
+     */
     function tambahBaris(id, tipe = 'material', nama = '', qty = '1', satuanType = '', satuanCustom = '', modal = '0') {
         const tbody = document.querySelector(`#${id} tbody`);
         const row = buatElemenBaris(tipe, nama, qty, satuanType, satuanCustom, modal);
@@ -1064,6 +1068,13 @@
     // 7. VALIDATION FUNCTIONS
     // ============================================================
 
+    /**
+     * Validasi persen.
+     * FIX: batas maksimal 100% dihapus - field ini juga dipakai untuk
+     * "Biaya Tak Terduga (%)" dan "Target Keuntungan (%)" yang secara bisnis
+     * wajar bisa melebihi 100% (mis. item kecil dengan margin tinggi).
+     * Hanya nilai negatif/tidak valid yang tetap dijaga ke 0.
+     */
     function validasiPersen(el) {
         if (el.value === '') {
             return;
@@ -1090,13 +1101,6 @@
         } else {
             el.classList.remove('input-warning');
         }
-    }
-
-    // 🔥 FUNGSI BARU: Validasi semua uraian sekaligus
-    function validasiSemuaUraian() {
-        document.querySelectorAll('.input-uraian').forEach(el => {
-            validasiUraian(el);
-        });
     }
 
     function formatInputRupiah(el) {
@@ -1240,6 +1244,12 @@
     // ============================================================
     // 9. UI UPDATE (INSTAN) + AUTO-SAVE KE STORAGE (DI-DEBOUNCE)
     // ============================================================
+    //
+    // FIX: sebelumnya hitungSemua() dkk ikut tertunda 300ms bersama proses
+    // simpan ke localStorage, sehingga angka subtotal/total terasa lag saat
+    // mengetik. Sekarang dipisah: perhitungan & tampilan berjalan INSTAN di
+    // setiap ketikan, dan HANYA penulisan ke localStorage yang di-debounce.
+    // ============================================================
 
     let timeoutStatus;
     let isSaving = false;
@@ -1291,8 +1301,17 @@
         }
     }
 
+    /**
+     * Penyimpanan ke localStorage di-debounce (jeda 400ms setelah berhenti mengetik)
+     * agar tidak menulis storage di setiap huruf yang diketik.
+     */
     const scheduleStorageSave = debounce(simpanKeStorage, 400);
 
+    /**
+     * Dipanggil dari setiap oninput/onchange di form.
+     * Perhitungan & tampilan (hitungSemua dkk) berjalan INSTAN,
+     * hanya penulisan ke localStorage yang ditunda (debounced).
+     */
     function debouncedSave() {
         hitungSemua();
         updateJudulHalaman();
@@ -1301,6 +1320,8 @@
         scheduleStorageSave();
     }
 
+    // Pengaman: kalau tab ditutup/refresh persis saat debounce belum sempat jalan,
+    // paksa simpan segera supaya tidak ada perubahan terakhir yang hilang.
     window.addEventListener('beforeunload', () => {
         simpanKeStorage();
     });
@@ -1309,6 +1330,15 @@
     // 10. RESET DATA
     // ============================================================
 
+    /**
+     * Reset data - buat RAB baru.
+     * FIX: sebelumnya fungsi ini MENGHAPUS proyek yang sedang aktif secara
+     * permanen dari localStorage, padahal dialog konfirmasi hanya bilang
+     * "form akan dikosongkan" - tidak ada peringatan soal penghapusan data.
+     * Sekarang perilaku dikembalikan seperti semula: proyek yang sedang dibuka
+     * TETAP TERSIMPAN di daftar "Proyek Tersimpan" dan bisa dimuat lagi kapan
+     * saja; tombol ini hanya mengosongkan form dan melepas status "aktif".
+     */
     function resetData() {
         if (!confirm("Buat proyek RAB baru? Form akan dikosongkan.")) return;
 
@@ -1349,11 +1379,6 @@
         updateJudulHalaman();
         updateTandaTanganInfo();
         syncPrintTC();
-        
-        // 🔥 PERBAIKAN BUG #1: Validasi semua uraian setelah reset
-        setTimeout(() => {
-            validasiSemuaUraian();
-        }, 100);
     }
 
     // ============================================================
@@ -1382,11 +1407,6 @@
                 updateJudulHalaman();
                 updateTandaTanganInfo();
                 syncPrintTC();
-                
-                // 🔥 PERBAIKAN BUG #1: Validasi semua uraian untuk inisialisasi kosong
-                setTimeout(() => {
-                    validasiSemuaUraian();
-                }, 100);
             }
         } catch (e) {
             console.error('Error initializing app:', e);
